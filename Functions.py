@@ -5,7 +5,10 @@ import time
 
 def detectCircles(img):
     """
-    Function used to detect Circles in a image, return the list of the circles and the image which drawn circles
+    This function is used to detect the circles in an image
+    :param img: the image where we want to detect circles
+    :return: result: an array of circles (x, y, r) if at least one circle has been found or FALSE if none circle has been found
+    :return: orginal: the orginal image with drawn circles to show what circles have been found
     """
     n = 0
 
@@ -52,8 +55,11 @@ def detectCircles(img):
 
 
 def cropCircles(img, circles):
+    # TODO : DEF A COMPLETER PAR WERNER !!!!!!!!!!!!!
     """
-    Function used to crop the image around the detected circles
+    :param img:
+    :param circles:
+    :return:
     """
     croped = []
     if circles is not None:
@@ -74,9 +80,12 @@ def cropCircles(img, circles):
             cv2.imwrite('assets/resized_image.png', resized_image)
     return croped
 
-def cropCirclesOld(img, circles):
+def extractCirclesAfterDetection(img, circles):
     """
-    Function used to crop the image around the detected circles
+    This function is used to crop the circles one they have been detected
+    :param img: original image
+    :param circles: array of circles (x, y, r) which have been detected in the orginal image
+    :return: croped: array of images which have been extracted thanks to the array of circles
     """
     croped = []
     margin = 5
@@ -92,7 +101,11 @@ def cropCirclesOld(img, circles):
 
 def detectRed(img):
     """
-    Function used to detect if the image is a sign (to eliminate false)
+    This function is used to detect the red color on an image and decide if the image is a sign or not, it enable to
+    eliminate false positives found by detectCircles
+    :param img: the image croped by extractCirclesAfterDetection
+    :return: imgThresholdr: the image with the red highlighted
+    :return: sign: TRUE if the image is a sign or FALSE if not
     """
     sign = False
 
