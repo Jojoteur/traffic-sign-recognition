@@ -10,27 +10,27 @@ def detectCircles(img):
     :return: result: an array of circles (x, y, r) if at least one circle has been found or FALSE if none circle has been found
     :return: orginal: the orginal image with drawn circles to show what circles have been found
     """
-    n = 0
 
     original = img.copy()
 
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-    img = cv2.medianBlur(img, 5)  # Apply filter to reduce false circles
-
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)                         # Convert to Gray color
+    img = cv2.medianBlur(img, 5)                                        # Apply filter to reduce false circles
     rows = img.shape[0]
+
     result = []
-    while (n < 100):
-        max = 100 - n  # Use standard ration size of traffic sign
+    sizeMax = 200                                                       # Size max of the Radius
+    n = 0
+
+    while (n < sizeMax):
+        max = sizeMax - n                                               # Use standard ratio size of traffic sign
         min = int(0.65 * max)
 
-        circles = cv2.HoughCircles(img, cv2.HOUGH_GRADIENT, 1, rows / 8, param1=250, param2=40, minRadius=min,
-                                   maxRadius=max)
+        circles = cv2.HoughCircles(img, cv2.HOUGH_GRADIENT, 1, rows / 8, param1=250, param2=40, minRadius=min, maxRadius=max)
 
-        if circles is not None:  # If circle has been found
+        if circles is not None:                                         # If circle has been found
             circles = np.round(circles[0, :]).astype("int")
             for elt in circles:
-                result.append(elt)  # Add the circle found to an array
+                result.append(elt)                                      # Add the circle found to an array
             for j in range(np.shape(result)[0]):
                 print result[j]
                 x = result[j][0]
@@ -38,7 +38,7 @@ def detectCircles(img):
                 r = result[j][2]
                 h = r
                 w = r
-                img[y - h:y + h, x - w:x + w] = 0  # Replace the circle by a black square
+                img[y - h:y + h, x - w:x + w] = 0                       # Replace the circle by a black square
         n = n + 5
 
     if result is not None:
@@ -55,7 +55,7 @@ def detectCircles(img):
 
 
 def cropCircles(img, circles):
-    # TODO : DEF A COMPLETER PAR WERNER !!!!!!!!!!!!!
+    # TODO : DEF A COMPLETER PAR WERNER OU DANS LA FONCTION DU DESSUS COMME ON EN A PARLE !!!!!!!!!!!!!
     """
     :param img:
     :param circles:
@@ -118,7 +118,7 @@ def detectRed(img):
 
     h, s, v = cv2.split(imgHSV);  # Split to work only on h (hue)
 
-    redthreshold = np.where(((h > 170) & (h <= 180)) | ((h >= 0) & (h < 10)))
+    redthreshold = np.where(((h >= 170) & (h <= 180)) | ((h >= 0) & (h <= 10)))
 
     imgThresholdr1 = np.zeros((np.shape(img)[0], np.shape(img)[1]))
     imgThresholdr2 = np.zeros((np.shape(img)[0], np.shape(img)[1]))
@@ -152,22 +152,24 @@ def test(img):
     """
     Function used to test the algorithm
     """
- #   cv2.imshow("Img", img)
+    cv2.imshow("Img", img)
     c, d = detectCircles(img)
 
-  #  cv2.imshow("Circles detected", d)
+    cv2.imshow("Circles detected", d)
 
-    croped = cropCircles(img, c)
+    croped = extractCirclesAfterDetection(img, c)
+    croped2 = []
     j = 0
 
     for j in range(np.shape(croped)[0]):
-        #    cv2.imshow("Croped " + str(j), croped[j])
+        cv2.imshow("Croped " + str(j), croped[j])
         colored, sign = detectRed(croped[j])
-        #  cv2.imshow("Croped colored " + str(j), colored)
+        cv2.imshow("Croped colored " + str(j), colored)
         print sign
 
+
     print("END")
-    #cv2.waitKey(0)
+    cv2.waitKey(0)
     cv2.destroyAllWindows()
 
     print "\n" * 10

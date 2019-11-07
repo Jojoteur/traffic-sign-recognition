@@ -18,6 +18,7 @@ while True:
         break
 
 
+"""
 #### Test with some images ####
 Itraffic1 = cv2.imread("assets/Traffic1.jpg", -1)
 Itraffic2 = cv2.imread("assets/Traffic2.jpg", -1)
@@ -50,7 +51,7 @@ Functions.test(Itraffic11)
 Functions.test(Itraffic12)
 Functions.test(Itraffic13)
 
-
+"""
 
 ## END ##
 cv2.waitKey(0)
