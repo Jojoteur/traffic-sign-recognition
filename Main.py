@@ -1,21 +1,48 @@
 import cv2
 import Functions
 import time
+from PIL.Image import *
+import cv2
+import os
 
+nombreDeBoucles=0
+a = 0
+i=0
+securite=1
 
 cap = cv2.VideoCapture(0)
-
 
 while True:
     _, frame = cap.read()
     hsv_frame = cv2.cvtColor(frame, 1)
-    #  cv2.imwrite('assets/hsv_frame.bmp', hsv_frame)
-    # hsv_frame = cv2.imread('assets/hsv_frame.bmp', -1)
-    Functions.test(hsv_frame)
-    key = cv2.waitKey(1)
+    cv2.imwrite('assets/hsv_frame.png', hsv_frame)
+    hsv_frame = cv2.imread('assets/hsv_frame.png', -1)
+    Functions.selection(hsv_frame)
 
+
+    if(Functions.selection(frame)=="valide"):
+       i=i+1
+       finalpixels = open("assets/ImageFinal.png")          # permet de calculer le nombre de pixel moyen blanc pour le chiffre de gauche
+       NombrePixel=Functions.whitePixels(finalpixels)
+       a=a+NombrePixel
+       nombreDeBoucles = nombreDeBoucles + 1
+       NombrePixelMoyenne=a/nombreDeBoucles
+       print "le nombre de pixel moyen est" , NombrePixelMoyenne
+       if i==securite:
+          Functions.validation(NombrePixelMoyenne)
+          i=0
+    else:
+        Noir=cv2.imread('assets/Noir.png', 1)
+        cv2.imwrite('assets/ImageFinal.png',Noir)
+        nombreDeBoucles=0
+        a=0
+
+
+
+    key = cv2.waitKey(1)
     if key == 27:
         break
+
 
 
 """

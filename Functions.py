@@ -2,6 +2,8 @@ import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 import time
+from PIL.Image import *
+
 
 def detectCircles(img):
     """
@@ -13,24 +15,25 @@ def detectCircles(img):
 
     original = img.copy()
 
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)                         # Convert to Gray color
-    img = cv2.medianBlur(img, 5)                                        # Apply filter to reduce false circles
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  # Convert to Gray color
+    img = cv2.medianBlur(img, 5)  # Apply filter to reduce false circles
     rows = img.shape[0]
 
     result = []
-    sizeMax = 200                                                       # Size max of the Radius
+    sizeMax = 200  # Size max of the Radius
     n = 0
 
     while (n < sizeMax):
-        max = sizeMax - n                                               # Use standard ratio size of traffic sign
+        max = sizeMax - n  # Use standard ratio size of traffic sign
         min = int(0.65 * max)
 
-        circles = cv2.HoughCircles(img, cv2.HOUGH_GRADIENT, 1, rows / 8, param1=250, param2=40, minRadius=min, maxRadius=max)
+        circles = cv2.HoughCircles(img, cv2.HOUGH_GRADIENT, 1, rows / 8, param1=250, param2=40, minRadius=min,
+                                   maxRadius=max)
 
-        if circles is not None:                                         # If circle has been found
+        if circles is not None:  # If circle has been found
             circles = np.round(circles[0, :]).astype("int")
             for elt in circles:
-                result.append(elt)                                      # Add the circle found to an array
+                result.append(elt)  # Add the circle found to an array
             for j in range(np.shape(result)[0]):
                 print result[j]
                 x = result[j][0]
@@ -38,7 +41,7 @@ def detectCircles(img):
                 r = result[j][2]
                 h = r
                 w = r
-                img[y - h:y + h, x - w:x + w] = 0                       # Replace the circle by a black square
+                img[y - h:y + h, x - w:x + w] = 0  # Replace the circle by a black square
         n = n + 5
 
     if result is not None:
@@ -54,31 +57,20 @@ def detectCircles(img):
     return False, original
 
 
-def cropCircles(img, circles):
-    # TODO : DEF A COMPLETER PAR WERNER OU DANS LA FONCTION DU DESSUS COMME ON EN A PARLE !!!!!!!!!!!!!
-    """
-    :param img:
-    :param circles:
-    :return:
-    """
+def cropCirclesCanny(img):
     croped = []
-    if circles is not None:
-        for (x, y, r) in circles:
-            h = int(r/1.95)
-            w = int(r/1.95)
+    # temp = img[25:75,25:75]
+    temp = img[25:75, 25:50]  # half of the image
+    final = cv2.cvtColor(temp, cv2.COLOR_BGR2GRAY)
+    final = cv2.Canny(final, 0, 200)
 
-            temp = img[y - h :y + h, x - w :x + w ]           # on enregistre canny + resized      La fonction renvoit resized pour pouvoir travailler dessus mais on doit modifier ca  bisous je t'aime
+    cv2.imwrite('assets/ImageFinal.png', final)
 
-            resized_image = cv2.resize(temp, (50, 50), interpolation=cv2.INTER_LANCZOS4)
+    croped.append(temp)
+    cv2.imwrite('assets/resized_image.png', temp)
 
-            final = cv2.cvtColor(resized_image, cv2.COLOR_BGR2GRAY)
-            final = cv2.Canny(final, 0, 200)
-
-            cv2.imwrite('assets/ImageFinal.png', final)
-
-            croped.append(resized_image)
-            cv2.imwrite('assets/resized_image.png', resized_image)
     return croped
+
 
 def extractCirclesAfterDetection(img, circles):
     """
@@ -88,15 +80,16 @@ def extractCirclesAfterDetection(img, circles):
     :return: croped: array of images which have been extracted thanks to the array of circles
     """
     croped = []
-    margin = 5
+    margin = 0
     if circles is not None:
         for (x, y, r) in circles:
             h = r
             w = r
-            temp = img[y-h-margin:y+h+margin, x-w-margin:x+w+margin]
+            temp = img[y - h - margin:y + h + margin, x - w - margin:x + w + margin]
+            temp = cv2.resize(temp, (100, 100), interpolation=cv2.INTER_LANCZOS4)
+            cv2.imwrite('assets/temp.png', temp)
             croped.append(temp)
     return croped
-
 
 
 def detectRed(img):
@@ -111,14 +104,14 @@ def detectRed(img):
 
     imgHSV = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  # Convert to HSV color-type
 
-    #hue_hist = cv2.calcHist([imgHSV], [0], None, [180], [0, 180])  # Find the histogram for the hue band
+    # hue_hist = cv2.calcHist([imgHSV], [0], None, [180], [0, 180])  # Find the histogram for the hue band
     # plt.plot(hue_hist)
     # plt.xticks(np.arange(0, 190, step=10))  # Config the x axis for better view
     # plt.show()
 
     h, s, v = cv2.split(imgHSV);  # Split to work only on h (hue)
 
-    redthreshold = np.where(((h >= 170) & (h <= 180)) | ((h >= 0) & (h <= 10)))
+    redthreshold = np.where(((h >= 160) & (h <= 180)) | ((h >= 0) & (h <= 20)))
 
     imgThresholdr1 = np.zeros((np.shape(img)[0], np.shape(img)[1]))
     imgThresholdr2 = np.zeros((np.shape(img)[0], np.shape(img)[1]))
@@ -148,28 +141,61 @@ def detectRed(img):
     return imgThresholdr, sign
 
 
-def test(img):
+def selection(img):
     """
     Function used to test the algorithm
     """
-    cv2.imshow("Img", img)
+    validation=""
+    # cv2.imshow("Img", img)
     c, d = detectCircles(img)
 
-    cv2.imshow("Circles detected", d)
+    # cv2.imshow("Circles detected", d)
 
     croped = extractCirclesAfterDetection(img, c)
-    croped2 = []
-    j = 0
 
     for j in range(np.shape(croped)[0]):
-        cv2.imshow("Croped " + str(j), croped[j])
+        # cv2.imshow("Croped " + str(j), croped[j])
         colored, sign = detectRed(croped[j])
-        cv2.imshow("Croped colored " + str(j), colored)
+        # cv2.imshow("Croped colored " + str(j), colored)
         print sign
+        if sign == True:
+            ImageCrop = cv2.imread('assets/temp.png', 1)  # on charge l'image panneau crop
+            ImageCropCanny = cropCirclesCanny(ImageCrop)  # on l'a decoupe et canny
+            validation="valide"
 
 
     print("END")
     cv2.waitKey(0)
     cv2.destroyAllWindows()
+    print "\n"
+    return validation
 
-    print "\n" * 10
+
+# Image.putpixel(i, (x, y), 255)
+def whitePixels(img):
+    n = 0
+    (l, h) = img.size
+    for y in range(h):
+        for x in range(l):
+            if (Image.getpixel(img, (x, y)) == 255):
+                n = n + 1
+    print"nombre de pixels blanc = ", n
+    return n
+
+
+def validation(nombrepixels):
+    if (nombrepixels > 175 and nombrepixels < 180):
+        panneau = 30
+        print "La limitation est de                         :" , panneau
+
+    if (nombrepixels > 123 and nombrepixels < 143):
+        panneau = 70
+        print "La limitation est de                         :" , panneau
+
+    if (nombrepixels > 161 and nombrepixels < 165):
+        panneau = 50
+        print "La limitation est de                         :" , panneau
+
+
+
+
