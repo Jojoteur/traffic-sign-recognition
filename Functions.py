@@ -14,20 +14,22 @@ def detectCircles(img):
     """
 
     original = img.copy()
-
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  # Convert to Gray color
     img = cv2.medianBlur(img, 5)  # Apply filter to reduce false circles
+    cv2.imshow("test", img)
+    cv2.moveWindow("test",0,0)
     rows = img.shape[0]
+    cols = img.shape[1]
 
     result = []
-    sizeMax = 200  # Size max of the Radius
+    sizeMax = 101 # Size max of the Radius
     n = 0
 
     while (n < sizeMax):
         max = sizeMax - n  # Use standard ratio size of traffic sign
         min = int(0.65 * max)
 
-        circles = cv2.HoughCircles(img, cv2.HOUGH_GRADIENT, 1, rows / 8, param1=250, param2=40, minRadius=min,
+        circles = cv2.HoughCircles(img, cv2.HOUGH_GRADIENT, 1, rows / 8, param1=100, param2=40, minRadius=min,
                                    maxRadius=max)
 
         if circles is not None:  # If circle has been found
@@ -35,13 +37,13 @@ def detectCircles(img):
             for elt in circles:
                 result.append(elt)  # Add the circle found to an array
             for j in range(np.shape(result)[0]):
-                print result[j]
                 x = result[j][0]
                 y = result[j][1]
                 r = result[j][2]
                 h = r
                 w = r
                 img[y - h:y + h, x - w:x + w] = 0  # Replace the circle by a black square
+
         n = n + 5
 
     if result is not None:
@@ -57,21 +59,6 @@ def detectCircles(img):
     return False, original
 
 
-def cropCirclesCanny(img):
-    croped = []
-    # temp = img[25:75,25:75]
-    temp = img[25:75, 25:50]  # half of the image
-    final = cv2.cvtColor(temp, cv2.COLOR_BGR2GRAY)
-    final = cv2.Canny(final, 0, 200)
-
-    cv2.imwrite('assets/ImageFinal.png', final)
-
-    croped.append(temp)
-    cv2.imwrite('assets/resized_image.png', temp)
-
-    return croped
-
-
 def extractCirclesAfterDetection(img, circles):
     """
     This function is used to crop the circles one they have been detected
@@ -79,17 +66,37 @@ def extractCirclesAfterDetection(img, circles):
     :param circles: array of circles (x, y, r) which have been detected in the orginal image
     :return: croped: array of images which have been extracted thanks to the array of circles
     """
-    croped = []
-    margin = 0
+    extracted = []
+    print circles
     if circles is not None:
         for (x, y, r) in circles:
             h = r
             w = r
-            temp = img[y - h - margin:y + h + margin, x - w - margin:x + w + margin]
+            temp = img[y - h: y + h, x - w: x + w]
             temp = cv2.resize(temp, (100, 100), interpolation=cv2.INTER_LANCZOS4)
-            cv2.imwrite('assets/temp.png', temp)
-            croped.append(temp)
-    return croped
+            #cv2.imwrite('assets/temp.png', temp)
+
+            extracted.append(temp)
+    return extracted
+
+def cropCirclesCanny(img):
+    """
+    This function is used to crop the image more precisely and keep only the number if the image is a traffic sign and then apply the canny filter
+    :param img: the image containing the circle which has been extracted thanks to extractCirclesAfterDetection()
+    :return: final: the croped image
+    """
+    temp = img[25:75, 25:50]  # half of the image
+    final = cv2.cvtColor(temp, cv2.COLOR_BGR2GRAY)
+    final = cv2.Canny(final, 0, 200)
+
+    #cv2.imwrite('assets/ImageFinal.png', final)
+    cv2.imshow('Canny croped',final)
+    cv2.moveWindow('Canny croped', 0, 0)
+
+    return final
+
+
+
 
 
 def detectRed(img):
@@ -111,7 +118,7 @@ def detectRed(img):
 
     h, s, v = cv2.split(imgHSV);  # Split to work only on h (hue)
 
-    redthreshold = np.where(((h >= 160) & (h <= 180)) | ((h >= 0) & (h <= 20)))
+    redthreshold = np.where(((h >= 175) & (h <= 180)) | ((h >= 0) & (h <= 5)))
 
     imgThresholdr1 = np.zeros((np.shape(img)[0], np.shape(img)[1]))
     imgThresholdr2 = np.zeros((np.shape(img)[0], np.shape(img)[1]))
@@ -126,8 +133,9 @@ def detectRed(img):
     imgThresholdr[:, :, 0] = imgThresholdr1
     imgThresholdr[:, :, 1] = imgThresholdr2
     imgThresholdr[:, :, 2] = imgThresholdr3
-
+    cv2.imshow(",,", imgThresholdr)
     imgThresholdr = cv2.cvtColor(imgThresholdr, cv2.COLOR_HSV2BGR)
+
 
     nbred = np.shape(redthreshold)[1]
     nbtotal = np.shape(h)[0] * np.shape(h)[0]
@@ -135,66 +143,93 @@ def detectRed(img):
 
     print ratio
 
-    if ratio > 0.2:
+    if ratio > 0.25:
         sign = True
 
-    return imgThresholdr, sign
 
-
-def selection(img):
-    """
-    Function used to test the algorithm
-    """
-    validation=""
-    # cv2.imshow("Img", img)
-    c, d = detectCircles(img)
-
-    # cv2.imshow("Circles detected", d)
-
-    croped = extractCirclesAfterDetection(img, c)
-
-    for j in range(np.shape(croped)[0]):
-        # cv2.imshow("Croped " + str(j), croped[j])
-        colored, sign = detectRed(croped[j])
-        # cv2.imshow("Croped colored " + str(j), colored)
-        print sign
-        if sign == True:
-            ImageCrop = cv2.imread('assets/temp.png', 1)  # on charge l'image panneau crop
-            ImageCropCanny = cropCirclesCanny(ImageCrop)  # on l'a decoupe et canny
-            validation="valide"
-
-
-    print("END")
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-    print "\n"
-    return validation
+    return imgThresholdr, True
 
 
 # Image.putpixel(i, (x, y), 255)
 def whitePixels(img):
+    """
+    This function is used to count the number of white pixels
+    :param img: the image with canny filter
+    :return: n: the number of pixels white
+    """
     n = 0
-    (l, h) = img.size
+    (l, h) = np.shape(img)
     for y in range(h):
         for x in range(l):
-            if (Image.getpixel(img, (x, y)) == 255):
+            if (img[x,y] == 255):
                 n = n + 1
     print"nombre de pixels blanc = ", n
     return n
 
 
-def validation(nombrepixels):
-    if (nombrepixels > 175 and nombrepixels < 180):
+def detectNumber(img):
+    """
+    This function is used to detect the number is the traffic sign
+    :param img: the img with canny filter
+    :return:
+    """
+    nbWhite = whitePixels(img)
+    #nbTotal = np.shape(img)[0] * np.shape(img)[0]
+    #ratio = float(nbWhite) / float(nbTotal)
+    validation(nbWhite)
+
+
+
+
+
+
+def validation(nbWhite):
+    if (nbWhite > 175 and nbWhite < 180):
         panneau = 30
         print "La limitation est de                         :" , panneau
 
-    if (nombrepixels > 123 and nombrepixels < 143):
+    if (nbWhite > 123 and nbWhite < 143):
         panneau = 70
         print "La limitation est de                         :" , panneau
 
-    if (nombrepixels > 161 and nombrepixels < 165):
+    if (nbWhite > 161 and nbWhite < 165):
         panneau = 50
         print "La limitation est de                         :" , panneau
+
+
+
+def Algorithm(img):
+    """
+    Function used to launch the algorithm
+    """
+    # cv2.imshow("Img", img)
+    c, d = detectCircles(img)                                               # Detect circles in the image
+
+    cv2.imshow("Circles detected", d)
+    cv2.moveWindow('Circles detected', 0, 0)
+
+    extracted = extractCirclesAfterDetection(img, c)                        # Extract the detected circles
+
+
+    for j in range(np.shape(extracted)[0]):                                 # Loop through the array containin the extracted image
+        if extracted[j] is not None:
+            cv2.imshow("Croped " + str(j), extracted[j])
+            cv2.moveWindow('Croped', 0, 0)
+            colored, sign = detectRed(extracted[j])                         # Detect presence of red in the extracted image
+
+            print "Image is a traffic sign: "+str(sign)
+
+            if sign == True:                                                # If we are sure than the image is traffic sign
+                cv2.imshow("Croped colored" + str(j), colored)
+                cv2.moveWindow("Croped colored", 0, 0)
+                ImageCropCanny = cropCirclesCanny(extracted[j])             # Crop to keep the number and apply canny filter
+                detectNumber(ImageCropCanny)
+
+    print("END")
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    print "\n"
+
 
 
 
