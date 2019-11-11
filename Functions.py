@@ -129,7 +129,8 @@ def white_pixels(img):
     (l, h) = np.shape(img)
     for y in range(h):
         for x in range(l):
-            if img[x, y] == 255:
+            if img[x, y] > 50 :
+            #if img[x, y] ==255:
                 n = n + 1
     print"nombre de pixels blanc = ", n
     return n
@@ -161,6 +162,41 @@ def validation(nb_white):
         print "La limitation est de                         :" , panneau
 
 
+def black_pixels_column_1(img):
+    """
+    This function is used to find the lower bound culumn of the black picture
+    :param img: the image in black and white
+    :return: y: lower bound culumn
+    """
+    (l, h) = np.shape(img)
+
+    for y in range(h):
+        n=0
+        for x in range(l):
+            if img[x, y] ==255:
+                n = n + 1
+                if n > 15:
+                   print " Column 1 is the  = ", y
+                   return y
+
+
+def black_pixels_column_2(img):
+    """
+    This function is used to find the upper bound culumn of the black picture
+    :param img: the image in black and white
+    :return: y: upper bound culumn
+    """
+
+    (l, h) = np.shape(img)
+    for y in range( black_pixels_column_1(img)+1 ,h):
+        n=0
+        for x in range(l):
+            if img[x, y] ==0:
+                n = n + 1
+                if n > 90:
+                   print " Culumn 2 is the ", y
+                   return y
+
 
 def algorithm(img):
     """
@@ -189,8 +225,24 @@ def algorithm(img):
                 cv2.moveWindow("Extracted" + str(j), 0, 0)
 
                 img_black = detect_black(extracted[j])
+                #cv2.imwrite("assets/img_black.png",img_black)
                 cv2.imshow("Black segmentation on extracted " + str(j), img_black)
                 cv2.moveWindow("Black segmentation on extracted " + str(j), 0, 0)
+
+
+                # we croped the img at the different boundaries
+                (l, h) = np.shape(img_black)
+                img_black=img_black[0:h,  black_pixels_column_1(img_black):black_pixels_column_2(img_black)]
+                cv2.imshow("Croped black segmentation on extracted ", img_black)
+                cv2.imwrite("assets/Cropedblack.png", img_black)
+
+
+                """     On ne peut pas utiliser cette fonction pour dire quel chiffre c'est ...
+                (l, h) = np.shape(img_black)
+                img_black = cv2.resize(img_black, (h*10, l*10), interpolation=cv2.INTER_LANCZOS4)
+                cv2.imshow("Croped black img_black 800 800 ", img_black)
+                white_pixels(img_black)
+                """
 
         cv2.waitKey(0)
         cv2.destroyAllWindows()
