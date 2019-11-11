@@ -10,19 +10,19 @@ def detect_red(img):
     :param img: the image where we want to detect red (sign)
     :return: img_threshold_red: the image segmented for red
     """
-    img_HSV = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  # Convert to HSV color-type
+    img_HSV = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)                                  # Convert to HSV color-type
 
-    lower_red = np.array([0, 120, 70])  # Range for lower red
+    lower_red = np.array([0, 120, 70])                                              # Range for lower red
     upper_red = np.array([10, 255, 255])
     mask1 = cv2.inRange(img_HSV, lower_red, upper_red)
 
-    lower_red = np.array([170, 120, 70])  # Range for upper red
+    lower_red = np.array([170, 120, 70])                                            # Range for upper red
     upper_red = np.array([180, 255, 255])
     mask2 = cv2.inRange(img_HSV, lower_red, upper_red)
 
-    mask1 = mask1 + mask2  # Generating the final mask
+    mask1 = mask1 + mask2                                                           # Generating the final mask
 
-    img_threshold_red = cv2.bitwise_and(img, img, mask=mask1)  # Detect and keep red
+    img_threshold_red = cv2.bitwise_and(img, img, mask=mask1)                       # Detect and keep red
 
     return img_threshold_red
 
@@ -33,14 +33,14 @@ def detect_black(img):
     :param img: the image where we want to detect black
     :return: img_threshold_black: the image segmented for black
     """
-    img_HSV = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  # Convert to HSV color-type
+    img_HSV = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)                                  # Convert to HSV color-type
 
-    lower_black = np.array([0, 0, 0])
-    upper_black = np.array([180, 255, 100])
+    lower_black = np.array([0, 0, 0])                                               # Range for lower black
+    upper_black = np.array([180, 255, 100])                                         # Range for upper black
 
-    mask = cv2.inRange(img_HSV, lower_black, upper_black)
+    mask = cv2.inRange(img_HSV, lower_black, upper_black)                           # Generating mask
 
-    return mask
+    return mask                                                                     # Return mask
 
 
 def detect_circles(img, original):
@@ -52,7 +52,7 @@ def detect_circles(img, original):
     :return: original: the original image with drawn circles to show what circles have been found
     """
     result = []
-    size_max = 100                                                           # Size max of the Radius
+    size_max = 100                                                          # Size max of the Radius
     n = 0
     found = 0
 
@@ -61,10 +61,10 @@ def detect_circles(img, original):
     rows = img.shape[0]
 
     while n < size_max:
-        max = size_max - n                                                   # Use standard ratio size of traffic sign
+        max = size_max - n                                                  # Use standard ratio size of traffic sign
         min = int(0.7 * max)
 
-        circles = cv2.HoughCircles(                                         # Detect circles thx to Hough Method
+        circles = cv2.HoughCircles(                                         # Detect circles thx to Hough-Method
             img,
             cv2.HOUGH_GRADIENT,
             1,
@@ -84,17 +84,16 @@ def detect_circles(img, original):
                 r = result[j][2]
                 h = r
                 w = r
-                img[y - h:y + h, x - w:x + w] = 255                          # Replace the circle by a black square
+                img[y - h:y + h, x - w:x + w] = 255                         # Replace the circle by a white square
         n = n + 5
 
     if result is not None:
-        found = np.shape(result)[0]                                          # Number of circles found
+        found = np.shape(result)[0]                                         # Number of circles found
         for j in range(found):
             x = result[j][0]
             y = result[j][1]
             r = result[j][2]
             cv2.circle(original, (x, y), r, (0, 255, 0), 4)
-            #cv2.rectangle(original, (x - 5, y - 5), (x + 5, y + 5), (0, 128, 255), -1)
 
     return found, result, original
 
@@ -110,15 +109,13 @@ def crop(img, circles):
     print circles
     if circles is not None:
         for (x, y, r) in circles:
-            #margin = int(r / 4)
             margin = -int(r/3)
             h = r
             w = r
             temp = img[y - h - margin: y + h + margin, x - w - margin: x + w + margin]
             temp = cv2.resize(temp, (100, 100), interpolation=cv2.INTER_LANCZOS4)
-            #cv2.imwrite('assets/temp.png', temp)
-
             extracted.append(temp)
+
     return extracted
 
 # Image.putpixel(i, (x, y), 255)
@@ -185,7 +182,7 @@ def algorithm(img):
 
     # Then extract the part of the image where circles has been detected
     if found>0:
-        extracted = crop(original, circles)              # Extract the detected circles
+        extracted = crop(original, circles)                                         # Extract the detected circles
         for j in range(np.shape(extracted)[0]):                                     # Loop through the array containing the extracted image
             if extracted[j] is not None:
                 cv2.imshow("Extracted" + str(j), extracted[j])                      # Show the interesting part
