@@ -109,12 +109,33 @@ def crop(img, circles):
     print circles
     if circles is not None:
         for (x, y, r) in circles:
-            margin = -int(r/3)
+            margin = 0
             h = r
             w = r
-            temp = img[y - h - margin: y + h + margin, x - w - margin: x + w + margin]
-            temp = cv2.resize(temp, (100, 100), interpolation=cv2.INTER_LANCZOS4)
-            extracted.append(temp)
+            mask = np.zeros(img.shape, dtype=np.uint8)
+            cv2.circle(mask, (x, y), r, (255, 255, 255), -1, 8, 0)
+            out = cv2.copyTo(img, mask)
+
+            # Crop to reduce size
+            margin = 0
+            h = r
+            w = r
+            out = out[y - h - margin: y + h + margin, x - w - margin: x + w + margin]
+
+            # TODO : finish crop polar
+            """
+            xc = out.shape[0]/2
+            yc = out.shape[1]/2
+
+
+            for i in range(out.shape[0]):
+                for j in range(out.shape[1]):
+
+                    if math.sqrt((i-xc)^2 + (j-yc)^2)>r:
+                        out[i,j]=255
+            
+            """
+            extracted.append(out)
 
     return extracted
 
@@ -228,7 +249,6 @@ def algorithm(img):
                 #cv2.imwrite("assets/img_black.png",img_black)
                 cv2.imshow("Black segmentation on extracted " + str(j), img_black)
                 cv2.moveWindow("Black segmentation on extracted " + str(j), 0, 0)
-
 
                 # we croped the img at the different boundaries
                 (l, h) = np.shape(img_black)
