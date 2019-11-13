@@ -33,6 +33,7 @@ def detect_black(img):
     :param img: the image where we want to detect black
     :return: img_threshold_black: the image segmented for black
     """
+    ret, img = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY)
     img_HSV = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)                                  # Convert to HSV color-type
 
     lower_black = np.array([0, 0, 0])                                               # Range for lower black
@@ -142,7 +143,7 @@ def improve(img):
     img_eroded = cv2.erode(img, mask)
     img_open = cv2.dilate(img_eroded, mask)
 
-    return img;
+    return img_open;
 
 # Image.putpixel(i, (x, y), 255)
 def white_pixels(img):
@@ -300,6 +301,10 @@ def algorithm(img):
                 cv2.imshow("Black segmentation on extracted " + str(j), img_black)
                 cv2.moveWindow("Black segmentation on extracted " + str(j), 0, 0)
 
+
+                img_black = improve(img_black)
+                cv2.imshow("Improve after black semgentation" + str(j), img_black)
+                cv2.moveWindow("Improve after black semgentation"  + str(j), 0, 0)
 
                 # we croped the img at the different boundaries
                 (l, h) = np.shape(img_black)
