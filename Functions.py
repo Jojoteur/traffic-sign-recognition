@@ -109,23 +109,18 @@ def crop(img, circles):
     print circles
     if circles is not None:
         for (x, y, r) in circles:
-            margin = 0
-            h = r
-            w = r
+            # Create mask for the circle
             mask = np.zeros(img.shape, dtype=np.uint8)
             cv2.circle(mask, (x, y), r, (255, 255, 255), -1, 8, 0)
             out = cv2.copyTo(img, mask)
 
-            # Crop to reduce size
+            # Crop to keep the ROI
             margin = 0
             h = r
             w = r
             out = out[y - h - margin: y + h + margin, x - w - margin: x + w + margin]
-
             xc = out.shape[0]/2
             yc = out.shape[1]/2
-
-
             for i in range(out.shape[0]):
                 for j in range(out.shape[1]):
                     if math.sqrt( math.pow((i-xc),2) + math.pow((j-yc),2))>=3*r/4:
@@ -135,6 +130,19 @@ def crop(img, circles):
             extracted.append(out)
 
     return extracted
+
+def improve(img):
+    """
+
+    :param img:
+    :return:
+    """
+    mask = np.ones((3, 3), np.uint8)
+
+    img_eroded = cv2.erode(img, mask)
+    img_open = cv2.dilate(img_eroded, mask)
+
+    return img;
 
 # Image.putpixel(i, (x, y), 255)
 def white_pixels(img):
