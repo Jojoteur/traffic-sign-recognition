@@ -193,7 +193,7 @@ def black_pixels_column_1(img):
         for x in range(l):
             if img[x, y] ==255:
                 n = n + 1
-                if n > 15:
+                if n > 5:
                    print " Column 1 is the  = ", y
                    return y
 
@@ -211,9 +211,54 @@ def black_pixels_column_2(img):
         for x in range(l):
             if img[x, y] ==0:
                 n = n + 1
-                if n > 90:
+                if n > 95:
                    print " Culumn 2 is the ", y
                    return y
+
+
+def black_pixels_ligne_1(img):
+    """
+    This function is used to find the lower bound ligne of the black picture
+    :param img: the image in black and white
+    :return: y: lower bound ligne
+    """
+    (l, h) = np.shape(img)
+
+    for x in range(l):
+        n=0
+        for y in range(h):
+            if img[x, y] ==255:
+                n = n + 1
+                if n > 5:
+                   print " Ligne 1 is the  = ", x
+                   return x
+
+
+def black_pixels_ligne_2(img):
+    """
+    This function is used to find the upper bound ligne of the black picture
+    :param img: the image in black and white
+    :return: y: upper bound ligne
+    """
+
+    (l, h) = np.shape(img)
+    for x in range( black_pixels_ligne_1(img)+1 ,h):
+        n=0
+        for y in range(h):
+            if img[x, y] ==0:
+                n = n + 1
+                if n > 95:
+                   print " Ligne 2 is the ", x
+                   return x
+
+
+
+
+
+
+
+
+
 
 
 def algorithm(img):
@@ -250,9 +295,12 @@ def algorithm(img):
 
                 # we croped the img at the different boundaries
                 (l, h) = np.shape(img_black)
-                img_black=img_black[0:h,  black_pixels_column_1(img_black):black_pixels_column_2(img_black)]
+                img_black=img_black[black_pixels_ligne_1(img_black)-3:black_pixels_ligne_2(img_black)+3,  black_pixels_column_1(img_black)-3:black_pixels_column_2(img_black)+3]
                 cv2.imshow("Croped black segmentation on extracted ", img_black)
                 cv2.imwrite("assets/Cropedblack.png", img_black)
+
+
+
 
 
 
