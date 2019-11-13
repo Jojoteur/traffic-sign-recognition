@@ -122,19 +122,16 @@ def crop(img, circles):
             w = r
             out = out[y - h - margin: y + h + margin, x - w - margin: x + w + margin]
 
-            # TODO : finish crop polar
-            """
             xc = out.shape[0]/2
             yc = out.shape[1]/2
 
 
             for i in range(out.shape[0]):
                 for j in range(out.shape[1]):
+                    if math.sqrt( math.pow((i-xc),2) + math.pow((j-yc),2))>=3*r/4:
+                        out[i,j]=255;
 
-                    if math.sqrt((i-xc)^2 + (j-yc)^2)>r:
-                        out[i,j]=255
-            
-            """
+            out=cv2.resize(out, (100,100))
             extracted.append(out)
 
     return extracted
@@ -250,11 +247,13 @@ def algorithm(img):
                 cv2.imshow("Black segmentation on extracted " + str(j), img_black)
                 cv2.moveWindow("Black segmentation on extracted " + str(j), 0, 0)
 
+
                 # we croped the img at the different boundaries
                 (l, h) = np.shape(img_black)
                 img_black=img_black[0:h,  black_pixels_column_1(img_black):black_pixels_column_2(img_black)]
                 cv2.imshow("Croped black segmentation on extracted ", img_black)
                 cv2.imwrite("assets/Cropedblack.png", img_black)
+
 
 
                 """     On ne peut pas utiliser cette fonction pour dire quel chiffre c'est ...
