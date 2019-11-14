@@ -31,15 +31,35 @@ def detect_black(img):
     :param img: the image where we want to detect black
     :return: img_threshold_black: the image segmented for black
     """
-    ret, img = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY)
-    img_HSV = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)                                  # Convert to HSV color-type
+    img_HSV = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  # Convert to HSV color-type
 
-    lower_black = np.array([0, 0, 0])                                               # Range for lower black
-    upper_black = np.array([180, 255, 100])                                         # Range for upper black
 
-    mask = cv2.inRange(img_HSV, lower_black, upper_black)                           # Generating mask
+    lower_red = np.array([0, 120, 70])  # Range for lower red
+    upper_red = np.array([10, 255, 255])
+    mask1 = cv2.inRange(img_HSV, lower_red, upper_red)
 
-    return mask                                                                     # Return mask
+    lower_red = np.array([170, 120, 70])  # Range for upper red
+    upper_red = np.array([180, 255, 255])
+    mask2 = cv2.inRange(img_HSV, lower_red, upper_red)
+
+    mask1 = mask1 + mask2
+
+    img_HSV[mask1>0]=[0,0,255]
+
+
+    #ret, img = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY)
+
+    lower_black = np.array([0, 0, 0])  # Range for lower black
+    upper_black = np.array([180, 255, 120])  # Range for upper black
+
+    mask = cv2.inRange(img_HSV, lower_black, upper_black)  # Generating mask
+
+    img_threshold_black = cv2.bitwise_and(img_HSV, img_HSV, mask=mask)                       # Detect and keep red
+
+    img_threshold_black = cv2.cvtColor(img_threshold_black, cv2.COLOR_HSV2BGR)  # Convert to HSV color-type
+
+
+    return mask
 
 
 def detect_circles(img, original):
@@ -84,7 +104,7 @@ def detect_circles(img, original):
                 h = r
                 w = r
                 img[y - h:y + h, x - w:x + w] = 255                         # Replace the circle by a white square
-        n = n + 5
+        n = n + 1
 
     if result is not None:
         found = np.shape(result)[0]                                         # Number of circles found
@@ -122,7 +142,7 @@ def crop(img, circles):
             yc = out.shape[1]/2
             for i in range(out.shape[0]):
                 for j in range(out.shape[1]):
-                    if math.sqrt( math.pow((i-xc),2) + math.pow((j-yc),2))>=3*r/4:
+                    if math.sqrt( math.pow((i-xc),2) + math.pow((j-yc),2))>=r:
                         out[i,j]=255;
 
             out=cv2.resize(out, (100,100))
@@ -132,16 +152,21 @@ def crop(img, circles):
 
 def improve(img):
     """
-
+    This function is used to improve the image after black detection (with erosion and dilation)
     :param img:
     :return:
     """
     mask = np.ones((3, 3), np.uint8)
 
+    # Erode two times for better result
     img_eroded = cv2.erode(img, mask)
+    img_eroded = cv2.erode(img_eroded, mask)
     img_open = cv2.dilate(img_eroded, mask)
+    img_open = cv2.dilate(img_open, mask)
 
-    return img_open;
+
+
+    return img_open
 
 # Image.putpixel(i, (x, y), 255)
 def white_pixels(img):
@@ -304,14 +329,18 @@ def algorithm(img):
                 cv2.imshow("Improve after black semgentation" + str(j), img_black)
                 cv2.moveWindow("Improve after black semgentation"  + str(j), 0, 0)
 
-                # we croped the img at the different boundaries
-                (l, h) = np.shape(img_black)
-                img_black=img_black[black_pixels_ligne_1(img_black)-3:black_pixels_ligne_2(img_black)+3,  black_pixels_column_1(img_black)-3:black_pixels_column_2(img_black)+3]
-                cv2.imshow("Croped black segmentation on extracted ", img_black)
-                cv2.imwrite("assets/Cropedblack.png", img_black)
+                if white_pixels(img_black)>0:
+                    # we croped the img at the different boundaries
+                    (l, h) = np.shape(img_black)
+                    black_pix_c1 =  black_pixels_column_1(img_black)
+                    black_pix_c2 =  black_pixels_column_2(img_black)
+                    black_pix_l1 = black_pixels_ligne_1(img_black)
+                    black_pix_l2 = black_pixels_ligne_2(img_black)
 
-
-
+                    if ((black_pix_c1 is not None) & (black_pix_c2 is not None) & (black_pix_l1 is not None) & (black_pix_l2 is not None)):
+                        img_black=img_black[black_pix_l1-3:black_pix_l2+3,  black_pix_c1-3:black_pix_c2+3]
+                        cv2.imshow("Croped black segmentation on extracted" + str(j), img_black)
+                        cv2.imwrite("assets/Cropedblack.png", img_black)
 
 
 

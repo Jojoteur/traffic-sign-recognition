@@ -6,7 +6,7 @@ import os
 
 
 """
-cap = cv2.VideoCapture("assets/video1.avi")
+cap = cv2.VideoCapture("assets/video2.avi")
 #cap = cv2.VideoCapture(0)
 
 while True:
@@ -22,8 +22,6 @@ while True:
     if key == 27:
         break
 """
-
-
 
 #### Test with some images ####
 Itraffic1 = cv2.imread("assets/Traffic1.jpg", -1)
@@ -41,7 +39,6 @@ Itraffic12 = cv2.imread("assets/Traffic12.jpg", -1)
 Itraffic13 = cv2.imread("assets/Traffic13.jpg", -1)
 
 ref30 = cv2.imread("assets/ref30.jpg", -1)
-
 
 
 Functions.algorithm(Itraffic1)
