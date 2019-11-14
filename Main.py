@@ -1,7 +1,6 @@
 import cv2
 import Functions
 import time
-from PIL.Image import *
 import cv2
 import os
 
