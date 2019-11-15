@@ -71,50 +71,30 @@ def detect_circles(img, original):
     :return: original: the original image with drawn circles to show what circles have been found
     """
     result = []
-    size_max = 100                                                          # Size max of the Radius
-    n = 0
     found = 0
-
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)                             # Convert to Gray color
     img = cv2.medianBlur(img, 5)                                            # Apply filter to reduce false circles
     rows = img.shape[0]
 
-    while n < size_max:
-        max = size_max - n                                                  # Use standard ratio size of traffic sign
-        min = int(0.7 * max)
+    min = 5
+    max = 100
+    circles = cv2.HoughCircles(                                         # Detect circles thx to Hough-Method
+        img,
+        cv2.HOUGH_GRADIENT,
+        1,
+        rows/6,
+        param1=200,
+        param2=20,
+        minRadius=min,
+        maxRadius=max)
 
-        circles = cv2.HoughCircles(                                         # Detect circles thx to Hough-Method
-            img,
-            cv2.HOUGH_GRADIENT,
-            1,
-            rows/4,
-            param1=200,
-            param2=20,
-            minRadius=min,
-            maxRadius=max)
-
-        if circles is not None:                                             # If at least one circle has been found
-            circles = np.round(circles[0, :]).astype("int")
-            for elt in circles:
-                result.append(elt)                                          # Add the circle found to an array
-            for j in range(np.shape(result)[0]):
-                x = result[j][0]
-                y = result[j][1]
-                r = result[j][2]
-                h = r
-                w = r
-                img[y - h:y + h, x - w:x + w] = 255                         # Replace the circle by a white square
-        n = n + 1
-
-    if result is not None:
-        found = np.shape(result)[0]                                         # Number of circles found
-        for j in range(found):
-            x = result[j][0]
-            y = result[j][1]
-            r = result[j][2]
+    if circles is not None:                                             # If at least one circle has been found
+        circles = np.round(circles[0, :]).astype("int")
+        for (x, y, r) in circles:
             cv2.circle(original, (x, y), r, (0, 255, 0), 4)
+        found = circles.shape[0]
 
-    return found, result, original
+    return found, circles, original
 
 
 def crop(img, circles):
@@ -142,11 +122,14 @@ def crop(img, circles):
             yc = out.shape[1]/2
             for i in range(out.shape[0]):
                 for j in range(out.shape[1]):
-                    if math.sqrt( math.pow((i-xc),2) + math.pow((j-yc),2))>=r:
+                    if math.sqrt( math.pow((i-xc),2) + math.pow((j-yc),2))>r:
                         out[i,j]=255;
 
-            out=cv2.resize(out, (100,100))
-            extracted.append(out)
+            # TODO : finir les bornes de securite
+            if x-r>0:
+                if y-r>0:
+                    out = cv2.resize(out, (100, 100), interpolation=cv2.INTER_LINEAR)
+                    extracted.append(out)
 
     return extracted
 
@@ -162,7 +145,7 @@ def improve(img):
     img_eroded = cv2.erode(img, mask)
     img_eroded = cv2.erode(img_eroded, mask)
     img_open = cv2.dilate(img_eroded, mask)
-    img_open = cv2.dilate(img_open, mask)
+    #img_open = cv2.dilate(img_open, mask)
 
 
 
@@ -338,13 +321,14 @@ def algorithm(img):
                     black_pix_l2 = black_pixels_ligne_2(img_black)
 
                     if ((black_pix_c1 is not None) & (black_pix_c2 is not None) & (black_pix_l1 is not None) & (black_pix_l2 is not None)):
-                        img_black=img_black[black_pix_l1-3:black_pix_l2+3,  black_pix_c1-3:black_pix_c2+3]
+                        img_black=img_black[black_pix_l1:black_pix_l2, black_pix_c1:black_pix_c2]
                         cv2.imshow("Croped black segmentation on extracted" + str(j), img_black)
                         cv2.imwrite("assets/Cropedblack.png", img_black)
 
 
 
-                """     On ne peut pas utiliser cette fonction pour dire quel chiffre c'est ...
+                """
+                    On ne peut pas utiliser cette fonction pour dire quel chiffre c'est ...
                 (l, h) = np.shape(img_black)
                 img_black = cv2.resize(img_black, (h*10, l*10), interpolation=cv2.INTER_LANCZOS4)
                 cv2.imshow("Croped black img_black 800 800 ", img_black)
@@ -353,6 +337,9 @@ def algorithm(img):
 
         cv2.waitKey(0)
         cv2.destroyAllWindows()
+                
+        
+
 
     print("END")
     print "\n"

@@ -4,25 +4,22 @@ import time
 import cv2
 import os
 
+"""
+#cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture("assets/video2.avi")
 
+while(cap.isOpened()):
+    ret, frame = cap.read()
+    Functions.algorithm(frame)
 
-#cap = cv2.VideoCapture("assets/video1.avi")
-cap = cv2.VideoCapture(0)
-
-while True:
-
-    _, frame = cap.read()
-    hsv_frame = cv2.cvtColor(frame, 1)
-    cv2.imshow("", hsv_frame)
-    #cv2.imwrite('assets/hsv_frame.png', hsv_frame)
-    #hsv_frame = cv2.imread('assets/hsv_frame.png', -1)
-    Functions.algorithm(hsv_frame)
-
-    key = cv2.waitKey(1)
-    if key == 27:
+    if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
+cap.release()
+cv2.destroyAllWindows()
 """
+
+
 #### Test with some images ####
 Itraffic1 = cv2.imread("assets/Traffic1.jpg", -1)
 Itraffic2 = cv2.imread("assets/Traffic2.jpg", -1)
@@ -52,12 +49,12 @@ Functions.algorithm(Itraffic8)
 Functions.algorithm(Itraffic9)
 Functions.algorithm(Itraffic10)
 Functions.algorithm(Itraffic11)
-Functions.algorithm(Itraffic12)
 Functions.algorithm(Itraffic13)
+Functions.algorithm(Itraffic12)
 
 ## END ##
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
 exit(0)
-"""
+
