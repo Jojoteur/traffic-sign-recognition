@@ -5,12 +5,12 @@ import cv2
 import os
 
 
-"""
-cap = cv2.VideoCapture("assets/video2.avi")
-#cap = cv2.VideoCapture(0)
+
+#cap = cv2.VideoCapture("assets/video1.avi")
+cap = cv2.VideoCapture(0)
 
 while True:
-    
+
     _, frame = cap.read()
     hsv_frame = cv2.cvtColor(frame, 1)
     cv2.imshow("", hsv_frame)
@@ -21,8 +21,8 @@ while True:
     key = cv2.waitKey(1)
     if key == 27:
         break
-"""
 
+"""
 #### Test with some images ####
 Itraffic1 = cv2.imread("assets/Traffic1.jpg", -1)
 Itraffic2 = cv2.imread("assets/Traffic2.jpg", -1)
@@ -60,3 +60,4 @@ cv2.waitKey(0)
 cv2.destroyAllWindows()
 
 exit(0)
+"""
