@@ -5,19 +5,21 @@ import cv2
 import os
 
 """
+
 #cap = cv2.VideoCapture(0)
-cap = cv2.VideoCapture("assets/video2.avi")
+cap = cv2.VideoCapture("assets/video1.avi")
 
 while(cap.isOpened()):
     ret, frame = cap.read()
     Functions.algorithm(frame)
 
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    if cv2.waitKey(25) & 0xFF == ord('q'):
         break
 
 cap.release()
 cv2.destroyAllWindows()
 """
+
 
 
 #### Test with some images ####

@@ -266,16 +266,6 @@ def black_pixels_ligne_2(img):
                    print " Ligne 2 is the ", x
                    return x
 
-
-
-
-
-
-
-
-
-
-
 def algorithm(img):
     """
     Function used to launch the algorithm
