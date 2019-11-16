@@ -33,7 +33,6 @@ def detect_black(img):
     """
     img_HSV = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  # Convert to HSV color-type
 
-
     lower_red = np.array([0, 120, 70])  # Range for lower red
     upper_red = np.array([10, 255, 255])
     mask1 = cv2.inRange(img_HSV, lower_red, upper_red)
@@ -42,22 +41,16 @@ def detect_black(img):
     upper_red = np.array([180, 255, 255])
     mask2 = cv2.inRange(img_HSV, lower_red, upper_red)
 
-    mask1 = mask1 + mask2
+    mask = mask1 + mask2
 
-    img_HSV[mask1>0]=[0,0,255]
-
+    img_HSV[mask>0]=[255,255,255]
 
     #ret, img = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY)
 
     lower_black = np.array([0, 0, 0])  # Range for lower black
-    upper_black = np.array([180, 255, 120])  # Range for upper black
+    upper_black = np.array([200, 255, 120])  # Range for upper black
 
     mask = cv2.inRange(img_HSV, lower_black, upper_black)  # Generating mask
-
-    img_threshold_black = cv2.bitwise_and(img_HSV, img_HSV, mask=mask)                       # Detect and keep red
-
-    img_threshold_black = cv2.cvtColor(img_threshold_black, cv2.COLOR_HSV2BGR)  # Convert to HSV color-type
-
 
     return mask
 
@@ -110,20 +103,23 @@ def crop(img, circles):
         for (x, y, r) in circles:
             # Create mask for the circle
             mask = np.zeros(img.shape, dtype=np.uint8)
+            mask = 255-mask
             cv2.circle(mask, (x, y), r, (255, 255, 255), -1, 8, 0)
             out = cv2.copyTo(img, mask)
 
             # Crop to keep the ROI
-            margin = 0
             h = r
             w = r
-            out = out[y - h - margin: y + h + margin, x - w - margin: x + w + margin]
+            out = out[y - h: y + h, x - w: x + w]
+            cv2.imshow("", out)
+
             xc = out.shape[0]/2
             yc = out.shape[1]/2
             for i in range(out.shape[0]):
                 for j in range(out.shape[1]):
-                    if math.sqrt( math.pow((i-xc),2) + math.pow((j-yc),2))>r:
-                        out[i,j]=255;
+                    if math.sqrt( math.pow((i-xc),2) + math.pow((j-yc),2))>=r:
+                        out[i,j]=[255, 255, 255]
+
 
             # TODO : finir les bornes de securite
             if x-r>0:
@@ -149,7 +145,7 @@ def improve(img):
 
 
 
-    return img_open
+    return 255-img_open
 
 # Image.putpixel(i, (x, y), 255)
 def white_pixels(img):
@@ -276,7 +272,7 @@ def algorithm(img):
 
     # First highlight red in the image
     img_red = detect_red(img)
-    #cv2.imshow("Red segmentation", img_red)
+    cv2.imshow("Red segmentation", img_red)
     #cv2.moveWindow("Red segmentation", 1000, 0)
 
     # Then detect circles
@@ -289,13 +285,13 @@ def algorithm(img):
         extracted = crop(original, circles)                                         # Extract the detected circles
         for j in range(np.shape(extracted)[0]):                                     # Loop through the array containing the extracted image
             if extracted[j] is not None:
-                #cv2.imshow("Extracted" + str(j), extracted[j])                      # Show the interesting part
+                cv2.imshow("Extracted" + str(j), extracted[j])                      # Show the interesting part
                 #cv2.moveWindow("Extracted" + str(j), 0, 0)
 
                 img_black = detect_black(extracted[j])
                 #cv2.imwrite("assets/img_black.png",img_black)
-                #cv2.imshow("Black segmentation on extracted " + str(j), img_black)
-                #cv2.moveWindow("Black segmentation on extracted " + str(j), 0, 0)
+                cv2.imshow("Black segmentation on extracted " + str(j), img_black)
+                cv2.moveWindow("Black segmentation on extracted " + str(j), 0, 0)
 
 
                 img_black = improve(img_black)

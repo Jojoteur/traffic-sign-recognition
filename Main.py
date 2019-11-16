@@ -4,10 +4,9 @@ import time
 import cv2
 import os
 
-
-
+"""
 #cap = cv2.VideoCapture(0)
-cap = cv2.VideoCapture("assets/video1.avi")
+cap = cv2.VideoCapture("assets/vid1.mov")
 
 while(cap.isOpened()):
     ret, frame = cap.read()
@@ -58,4 +57,3 @@ cv2.waitKey(0)
 cv2.destroyAllWindows()
 
 exit(0)
-"""
