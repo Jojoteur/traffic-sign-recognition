@@ -276,32 +276,34 @@ def algorithm(img):
 
     # First highlight red in the image
     img_red = detect_red(img)
-    cv2.imshow("Red segmentation", img_red)
-    cv2.moveWindow("Red segmentation", 1000, 0)
+    #cv2.imshow("Red segmentation", img_red)
+    #cv2.moveWindow("Red segmentation", 1000, 0)
 
     # Then detect circles
     found, circles, drawn = detect_circles(img_red, img)
-    cv2.imshow("Circles detected", img)
-    cv2.moveWindow('Circles detected', 0, 0)
+    #cv2.imshow("Circles detected", img)
+    #cv2.moveWindow('Circles detected', 0, 0)
 
     # Then extract the part of the image where circles has been detected
     if found>0:
         extracted = crop(original, circles)                                         # Extract the detected circles
         for j in range(np.shape(extracted)[0]):                                     # Loop through the array containing the extracted image
             if extracted[j] is not None:
-                cv2.imshow("Extracted" + str(j), extracted[j])                      # Show the interesting part
-                cv2.moveWindow("Extracted" + str(j), 0, 0)
+                #cv2.imshow("Extracted" + str(j), extracted[j])                      # Show the interesting part
+                #cv2.moveWindow("Extracted" + str(j), 0, 0)
 
                 img_black = detect_black(extracted[j])
                 #cv2.imwrite("assets/img_black.png",img_black)
-                cv2.imshow("Black segmentation on extracted " + str(j), img_black)
-                cv2.moveWindow("Black segmentation on extracted " + str(j), 0, 0)
+                #cv2.imshow("Black segmentation on extracted " + str(j), img_black)
+                #cv2.moveWindow("Black segmentation on extracted " + str(j), 0, 0)
 
 
                 img_black = improve(img_black)
                 cv2.imshow("Improve after black semgentation" + str(j), img_black)
                 cv2.moveWindow("Improve after black semgentation"  + str(j), 0, 0)
+                #cv2.imwrite("assets/img" + str(j) +".png", img_black)
 
+                """
                 if white_pixels(img_black)>0:
                     # we croped the img at the different boundaries
                     (l, h) = np.shape(img_black)
@@ -314,7 +316,7 @@ def algorithm(img):
                         img_black=img_black[black_pix_l1:black_pix_l2, black_pix_c1:black_pix_c2]
                         cv2.imshow("Croped black segmentation on extracted" + str(j), img_black)
                         cv2.imwrite("assets/Cropedblack.png", img_black)
-
+                """
 
 
                 """

@@ -4,7 +4,7 @@ import time
 import cv2
 import os
 
-"""
+
 
 #cap = cv2.VideoCapture(0)
 cap = cv2.VideoCapture("assets/video1.avi")
@@ -18,10 +18,9 @@ while(cap.isOpened()):
 
 cap.release()
 cv2.destroyAllWindows()
+
+
 """
-
-
-
 #### Test with some images ####
 Itraffic1 = cv2.imread("assets/Traffic1.jpg", -1)
 Itraffic2 = cv2.imread("assets/Traffic2.jpg", -1)
@@ -59,4 +58,4 @@ cv2.waitKey(0)
 cv2.destroyAllWindows()
 
 exit(0)
-
+"""
