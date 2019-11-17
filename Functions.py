@@ -31,26 +31,24 @@ def detect_black(img):
     :param img: the image where we want to detect black
     :return: img_threshold_black: the image segmented for black
     """
-    img_HSV = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  # Convert to HSV color-type
+    img_HSV = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)                                  # Convert to HSV color-type
 
-    lower_red = np.array([0, 120, 70])  # Range for lower red
+    lower_red = np.array([0, 120, 70])                                              # Range for lower red
     upper_red = np.array([10, 255, 255])
     mask1 = cv2.inRange(img_HSV, lower_red, upper_red)
 
-    lower_red = np.array([170, 120, 70])  # Range for upper red
+    lower_red = np.array([170, 120, 70])                                            # Range for upper red
     upper_red = np.array([180, 255, 255])
     mask2 = cv2.inRange(img_HSV, lower_red, upper_red)
 
     mask = mask1 + mask2
 
-    img_HSV[mask>0]=[255,255,255]
+    img_HSV[mask>0]=[255,255,255]                                                   # Eliminate the red
 
-    #ret, img = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY)
+    lower_black = np.array([0, 0, 0])                                               # Range for lower black
+    upper_black = np.array([200, 255, 120])                                         # Range for upper black
 
-    lower_black = np.array([0, 0, 0])  # Range for lower black
-    upper_black = np.array([200, 255, 120])  # Range for upper black
-
-    mask = cv2.inRange(img_HSV, lower_black, upper_black)  # Generating mask
+    mask = cv2.inRange(img_HSV, lower_black, upper_black)                           # Generating mask
 
     return mask
 
@@ -63,7 +61,6 @@ def detect_circles(img, original):
     :return: result: an array of circles (x, y, r) if at least one circle has been found or FALSE if none circle has been found
     :return: original: the original image with drawn circles to show what circles have been found
     """
-    result = []
     found = 0
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)                             # Convert to Gray color
     img = cv2.medianBlur(img, 5)                                            # Apply filter to reduce false circles
@@ -71,7 +68,7 @@ def detect_circles(img, original):
 
     min = 5
     max = 100
-    circles = cv2.HoughCircles(                                         # Detect circles thx to Hough-Method
+    circles = cv2.HoughCircles(                                             # Detect circles thx to Hough-Method
         img,
         cv2.HOUGH_GRADIENT,
         1,
@@ -81,7 +78,7 @@ def detect_circles(img, original):
         minRadius=min,
         maxRadius=max)
 
-    if circles is not None:                                             # If at least one circle has been found
+    if circles is not None:                                                 # If at least one circle has been found
         circles = np.round(circles[0, :]).astype("int")
         for (x, y, r) in circles:
             cv2.circle(original, (x, y), r, (0, 255, 0), 4)
@@ -107,26 +104,25 @@ def crop(img, circles):
             cv2.circle(mask, (x, y), r, (255, 255, 255), -1, 8, 0)
             out = cv2.copyTo(img, mask)
 
-            # Crop to keep the ROI
-            h = r
-            w = r
-            out = out[y - h: y + h, x - w: x + w]
-            cv2.imshow("", out)
+            height = out.shape[0]
+            width = out.shape[1]
 
-            xc = out.shape[0]/2
-            yc = out.shape[1]/2
-            for i in range(out.shape[0]):
-                for j in range(out.shape[1]):
-                    if math.sqrt( math.pow((i-xc),2) + math.pow((j-yc),2))>=r:
-                        out[i,j]=[255, 255, 255]
+            # Test if the circle doesn't go outside the image
+            if (x - r > 0) & (y - r > 0) & (x + r < width) & (y + r < height):
+                # Crop to keep the ROI
+                h = r
+                w = r
+                out = out[y - h: y + h, x - w: x + w]
 
+                xc = out.shape[0] / 2
+                yc = out.shape[1] / 2
+                for i in range(out.shape[0]):
+                    for j in range(out.shape[1]):
+                        if math.sqrt(math.pow((i - xc), 2) + math.pow((j - yc), 2)) >= r:
+                            out[i, j] = [255, 255, 255]
 
-            # TODO : finir les bornes de securite
-            if x-r>0:
-                if y-r>0:
-                    out = cv2.resize(out, (100, 100), interpolation=cv2.INTER_LINEAR)
-                    extracted.append(out)
-
+                out = cv2.resize(out, (100, 100), interpolation=cv2.INTER_LINEAR)
+                extracted.append(out)
     return extracted
 
 def improve(img):
@@ -136,143 +132,28 @@ def improve(img):
     :return:
     """
     mask = np.ones((3, 3), np.uint8)
-
-    # Erode two times for better result
     img_eroded = cv2.erode(img, mask)
-    img_eroded = cv2.erode(img_eroded, mask)
     img_open = cv2.dilate(img_eroded, mask)
-    #img_open = cv2.dilate(img_open, mask)
-
-
-
     return 255-img_open
 
-# Image.putpixel(i, (x, y), 255)
-def white_pixels(img):
-    """
-    This function is used to count the number of white pixels
-    :param img: the image with canny filter
-    :return: n: the number of pixels white
-    """
-    n = 0
-    (l, h) = np.shape(img)
-    for y in range(h):
-        for x in range(l):
-            if img[x, y] > 50 :
-            #if img[x, y] ==255:
-                n = n + 1
-    print"nombre de pixels blanc = ", n
-    return n
 
-
-def detect_number(img):
-    """
-    This function is used to detect the number is the traffic sign
-    :param img: the img with canny filter
-    :return:
-    """
-    nb_white = white_pixels(img)
-    #nbTotal = np.shape(img)[0] * np.shape(img)[0]
-    #ratio = float(nbWhite) / float(nbTotal)
-    validation(nb_white)
-
-
-def validation(nb_white):
-    if (nb_white > 175 and nb_white < 180):
-        panneau = 30
-        print "La limitation est de                         :" , panneau
-
-    if (nb_white > 123 and nb_white < 143):
-        panneau = 70
-        print "La limitation est de                         :" , panneau
-
-    if (nb_white > 161 and nb_white < 165):
-        panneau = 50
-        print "La limitation est de                         :" , panneau
-
-
-def black_pixels_column_1(img):
-    """
-    This function is used to find the lower bound culumn of the black picture
-    :param img: the image in black and white
-    :return: y: lower bound culumn
-    """
-    (l, h) = np.shape(img)
-
-    for y in range(h):
-        n=0
-        for x in range(l):
-            if img[x, y] ==255:
-                n = n + 1
-                if n > 5:
-                   print " Column 1 is the  = ", y
-                   return y
-
-
-def black_pixels_column_2(img):
-    """
-    This function is used to find the upper bound culumn of the black picture
-    :param img: the image in black and white
-    :return: y: upper bound culumn
-    """
-
-    (l, h) = np.shape(img)
-    for y in range( black_pixels_column_1(img)+1 ,h):
-        n=0
-        for x in range(l):
-            if img[x, y] ==0:
-                n = n + 1
-                if n > 95:
-                   print " Culumn 2 is the ", y
-                   return y
-
-
-def black_pixels_ligne_1(img):
-    """
-    This function is used to find the lower bound ligne of the black picture
-    :param img: the image in black and white
-    :return: y: lower bound ligne
-    """
-    (l, h) = np.shape(img)
-
-    for x in range(l):
-        n=0
-        for y in range(h):
-            if img[x, y] ==255:
-                n = n + 1
-                if n > 5:
-                   print " Ligne 1 is the  = ", x
-                   return x
-
-
-def black_pixels_ligne_2(img):
-    """
-    This function is used to find the upper bound ligne of the black picture
-    :param img: the image in black and white
-    :return: y: upper bound ligne
-    """
-
-    (l, h) = np.shape(img)
-    for x in range( black_pixels_ligne_1(img)+1 ,h):
-        n=0
-        for y in range(h):
-            if img[x, y] ==0:
-                n = n + 1
-                if n > 95:
-                   print " Ligne 2 is the ", x
-                   return x
 
 def algorithm(img):
     """
     Function used to launch the algorithm
     """
-    cv2.imshow("Image", img)
+    r = np.shape(img)[0]
+    c = np.shape(img)[1]
+    show = cv2.resize(img, (c/4, r/4), interpolation=cv2.INTER_LINEAR)
+    #cv2.imshow("Image", img)
+    #cv2.moveWindow("Image", 0, 0)
+    cv2.imshow("Image", show)
     cv2.moveWindow("Image", 0, 0)
     original = img.copy()
 
     # First highlight red in the image
     img_red = detect_red(img)
-    cv2.imshow("Red segmentation", img_red)
+    #cv2.imshow("Red segmentation", img_red)
     #cv2.moveWindow("Red segmentation", 1000, 0)
 
     # Then detect circles
@@ -290,8 +171,8 @@ def algorithm(img):
 
                 img_black = detect_black(extracted[j])
                 #cv2.imwrite("assets/img_black.png",img_black)
-                cv2.imshow("Black segmentation on extracted " + str(j), img_black)
-                cv2.moveWindow("Black segmentation on extracted " + str(j), 0, 0)
+                #cv2.imshow("Black segmentation on extracted " + str(j), img_black)
+                #cv2.moveWindow("Black segmentation on extracted " + str(j), 0, 0)
 
 
                 img_black = improve(img_black)
@@ -325,9 +206,6 @@ def algorithm(img):
 
         cv2.waitKey(0)
         cv2.destroyAllWindows()
-                
-        
-
 
     print("END")
     print "\n"
