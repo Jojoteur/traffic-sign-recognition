@@ -46,7 +46,7 @@ def detect_black(img):
     img_HSV[mask>0]=[255,255,255]                                                   # Eliminate the red
 
     lower_black = np.array([0, 0, 0])                                               # Range for lower black
-    upper_black = np.array([200, 255, 120])                                         # Range for upper black
+    upper_black = np.array([180, 255, 115])                                         # Range for upper black
 
     mask = cv2.inRange(img_HSV, lower_black, upper_black)                           # Generating mask
 
@@ -66,7 +66,7 @@ def detect_circles(img, original):
     img = cv2.medianBlur(img, 5)                                            # Apply filter to reduce false circles
     rows = img.shape[0]
 
-    min = 5
+    min = 15
     max = 100
     circles = cv2.HoughCircles(                                             # Detect circles thx to Hough-Method
         img,

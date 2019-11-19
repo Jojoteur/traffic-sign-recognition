@@ -13,7 +13,6 @@ cap.set(cv2.CAP_PROP_POS_FRAMES, 380)
 while(cap.isOpened()):
     ret, frame = cap.read()
     Functions.algorithm(frame)
-
     if cv2.waitKey(25) & 0xFF == ord('q'):
         break
 
