@@ -142,13 +142,13 @@ def algorithm(img):
     """
     Function used to launch the algorithm
     """
-    r = np.shape(img)[0]
-    c = np.shape(img)[1]
-    show = cv2.resize(img, ((int)(c/4), (int)(r/4)), interpolation=cv2.INTER_LINEAR)
+    #r = np.shape(img)[0]
+    #c = np.shape(img)[1]
+    #show = cv2.resize(img, ((int)(c/4), (int)(r/4)), interpolation=cv2.INTER_LINEAR)
     #cv2.imshow("Image", img)
     #cv2.moveWindow("Image", 0, 0)
-    cv2.imshow("Image", show)
-    cv2.moveWindow("Image", 0, 0)
+    #cv2.imshow("Image", show)
+    #cv2.moveWindow("Image", 0, 0)
     original = img.copy()
 
     # First highlight red in the image
@@ -166,7 +166,7 @@ def algorithm(img):
         extracted = crop(original, circles)                                         # Extract the detected circles
         for j in range(np.shape(extracted)[0]):                                     # Loop through the array containing the extracted image
             if extracted[j] is not None:
-                cv2.imshow("Extracted" + str(j), extracted[j])                      # Show the interesting part
+                #cv2.imshow("Extracted" + str(j), extracted[j])                      # Show the interesting part
                 #cv2.moveWindow("Extracted" + str(j), 0, 0)
 
                 img_black = detect_black(extracted[j])
