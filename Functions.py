@@ -95,7 +95,7 @@ def crop(img, circles):
     :return: extracted: array of images which have been extracted thanks to the array of circles
     """
     extracted = []
-    print circles
+    print(circles)
     if circles is not None:
         for (x, y, r) in circles:
             # Create mask for the circle
@@ -144,7 +144,7 @@ def algorithm(img):
     """
     r = np.shape(img)[0]
     c = np.shape(img)[1]
-    show = cv2.resize(img, (c/4, r/4), interpolation=cv2.INTER_LINEAR)
+    show = cv2.resize(img, ((int)(c/4), (int)(r/4)), interpolation=cv2.INTER_LINEAR)
     #cv2.imshow("Image", img)
     #cv2.moveWindow("Image", 0, 0)
     cv2.imshow("Image", show)
@@ -208,7 +208,7 @@ def algorithm(img):
         cv2.destroyAllWindows()
 
     print("END")
-    print "\n"
+    print("\n")
 
 
 

@@ -1,9 +1,12 @@
-# Traffic Sign Recognition
+# Traffic Sign Recognition :
 
 This project implements a solution for the detection (and recognition of traffic signs)  
 For the moment, we only work on speed limits detection (ie. round with red bounders signs)
 
-## General Idea
+## Compatibility :
+This project has been developed to work with **Python 3.7**
+
+## General Idea :
 The idea of this project is to make the detection is several steps :
 <ol>
     <li> Detect the red in the image </li>
@@ -13,7 +16,7 @@ The idea of this project is to make the detection is several steps :
 </ol>
 
 
-## Get started
+## Get started :
 ### Requirements :
 This project needs some external libraries :
 <ul>
