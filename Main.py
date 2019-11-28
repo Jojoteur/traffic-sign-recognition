@@ -84,6 +84,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
     # recupère à l'aide de Numpy le cadre de l'image, pour l'afficher ensuite à l'écran
     image = frame.array
+    Functions.algorithm(image)
 
     # affichage du flux vidéo
     key = cv2.waitKey(1) & 0xFF
