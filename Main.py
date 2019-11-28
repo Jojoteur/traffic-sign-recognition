@@ -70,28 +70,25 @@ from picamera.array import PiRGBArray
 from picamera import PiCamera
 import time
 
-# initialize the camera and grab a reference to the raw camera capture
+# Camera initialization
 camera = PiCamera()
-camera.resolution = (1920, 1080)
+camera.resolution = (640, 480)
 camera.framerate = 30
-rawCapture = PiRGBArray(camera, size=(1920, 1080))
+rawCapture = PiRGBArray(camera, size=(640, 480))
 
-# allow the camera to warmup
-time.sleep(2)
 
-# capture du flux vidéo
+# Capturing frames
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
 
-    # recupère à l'aide de Numpy le cadre de l'image, pour l'afficher ensuite à l'écran
     image = frame.array
+
     Functions.algorithm(image)
 
-    # affichage du flux vidéo
+    # Wait for key
     key = cv2.waitKey(1) & 0xFF
 
-    # initialisation du flux
+    # clear the stream in preparation for the next frame
     rawCapture.truncate(0)
 
-    # si la touche q du clavier est appuyée, on sort de la boucle
-    if key == ord("q"):
-        break
+
+cv2.destroyAllWindows()
