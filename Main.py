@@ -103,5 +103,6 @@ fps = FPS().start()
 
 while (1):
     frame = vs.read()
-    Functions.algorithm(frame)
+    cv2.imshow("",frame)
+    #Functions.algorithm(frame)
 
