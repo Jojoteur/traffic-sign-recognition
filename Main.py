@@ -10,7 +10,8 @@ cap = cv2.VideoCapture(0)
 #cap = cv2.VideoCapture("assets/test.mp4")
 #cap.set(cv2.CAP_PROP_POS_FRAMES, 380)
 
-
+cap.set(3,1920)
+cap.set(4,1080)
 while(cap.isOpened()):
 
     ret, frame = cap.read()
