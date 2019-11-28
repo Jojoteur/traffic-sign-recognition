@@ -5,24 +5,20 @@ import cv2
 import os
 
 
+"""
 cap = cv2.VideoCapture(0)
 #cap = cv2.VideoCapture("assets/vid1.mov")
 #cap = cv2.VideoCapture("assets/test.mp4")
 #cap.set(cv2.CAP_PROP_POS_FRAMES, 380)
-
-cap.set(3,1920)
-cap.set(4,1080)
 while(cap.isOpened()):
-
     ret, frame = cap.read()
     Functions.algorithm(frame)
-    cv2.imwrite("test.png",frame)
     if cv2.waitKey(25) & 0xFF == ord('q'):
         break
 
 cap.release()
 cv2.destroyAllWindows()
-
+"""
 
 
 """
@@ -67,18 +63,17 @@ exit(0)
 
 
 """
-"""
+
 ##### FOR THE RASPBERRY #####
 # import the necessary packages
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 import time
-import cv2
 
 # initialize the camera and grab a reference to the raw camera capture
 camera = PiCamera()
 camera.resolution = (1920, 1080)
-camera.framerate = 25
+camera.framerate = 30
 rawCapture = PiRGBArray(camera, size=(1920, 1080))
 
 # allow the camera to warmup
@@ -92,9 +87,11 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
     # show the frame
     Functions.algorithm(image)
+    """
     if cv2.waitKey(25) & 0xFF == ord('q'):
         break
+    """
 
     # clear the stream in preparation for the next frame
     rawCapture.truncate(0)
-"""
+
