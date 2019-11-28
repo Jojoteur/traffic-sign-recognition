@@ -4,7 +4,7 @@ import time
 import cv2
 import os
 
-"""
+
 cap = cv2.VideoCapture(0)
 #cap = cv2.VideoCapture("assets/vid1.mov")
 #cap = cv2.VideoCapture("assets/test.mp4")
@@ -18,7 +18,7 @@ while(cap.isOpened()):
 
 cap.release()
 cv2.destroyAllWindows()
-"""
+
 
 
 """
@@ -94,17 +94,3 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     # clear the stream in preparation for the next frame
     rawCapture.truncate(0)
 """
-from imutils.video import VideoStream
-from imutils.video import FPS
-
-vs = VideoStream(usePiCamera=True, resolution=(1920, 1080)).start()
-time.sleep(2.0)
-fps = FPS().start()
-
-while (1):
-    frame = vs.read()
-    (h, w) = frame.shape[:2]
-    blob = cv2.dnn.blobFromImage(frame)
-    cv2.imshow("",blob)
-    #Functions.algorithm(frame)
-
