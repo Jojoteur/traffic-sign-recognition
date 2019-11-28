@@ -68,16 +68,18 @@ exit(0)
 # import the necessary packages
 
 from imutils.video import VideoStream
-from imutils.video import FPS
 
 vs = VideoStream(usePiCamera=True, resolution=(1920, 1080)).start()
 time.sleep(2.0)
 
 while(1):
     frame = vs.read()
+
     Functions.algorithm(frame)
 
     key = cv2.waitKey(1) & 0xFF
+
+    vs.update()
 
 
 
