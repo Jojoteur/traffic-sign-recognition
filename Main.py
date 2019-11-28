@@ -103,6 +103,8 @@ fps = FPS().start()
 
 while (1):
     frame = vs.read()
-    cv2.imshow("",frame)
+    (h, w) = frame.shape[:2]
+    blob = cv2.dnn.blobFromImage(frame)
+    cv2.imshow("",blob)
     #Functions.algorithm(frame)
 
