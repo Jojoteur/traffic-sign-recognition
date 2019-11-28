@@ -69,7 +69,7 @@ exit(0)
 
 from imutils.video import VideoStream
 
-vs = VideoStream(usePiCamera=True, resolution=(1600, 1200)).start()
+vs = VideoStream(usePiCamera=True, resolution=(1920, 1080)).start()
 time.sleep(2.0)
 
 while(1):
