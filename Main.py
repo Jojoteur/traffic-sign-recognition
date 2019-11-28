@@ -9,14 +9,13 @@ cap = cv2.VideoCapture(0)
 #cap = cv2.VideoCapture("assets/vid1.mov")
 #cap = cv2.VideoCapture("assets/test.mp4")
 #cap.set(cv2.CAP_PROP_POS_FRAMES, 380)
-#cap.set(cv2.CAP_PROP_FRAME_WIDTH,1920)
-#cap.set(cv2.CAP_PROP_FRAME_HEIGHT,1080)
-#cap.set(cv2.CAP_PROP_FPS, 25)
+
 
 while(cap.isOpened()):
 
     ret, frame = cap.read()
     Functions.algorithm(frame)
+    cv2.imwrite("test.png",frame)
     if cv2.waitKey(25) & 0xFF == ord('q'):
         break
 
