@@ -11,7 +11,7 @@ cap = cv2.VideoCapture(0)
 #cap.set(cv2.CAP_PROP_POS_FRAMES, 380)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH,1920)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT,1080)
-cap.set(cv2.CAP_PROP_FPS, 25)
+#cap.set(cv2.CAP_PROP_FPS, 25)
 
 while(cap.isOpened()):
 
