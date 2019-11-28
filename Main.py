@@ -79,17 +79,18 @@ rawCapture = PiRGBArray(camera, size=(1920, 1080))
 # allow the camera to warmup
 time.sleep(2)
 
-# capture frames from the camera
+# capture du flux vidéo
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
-    # grab the raw NumPy array representing the image, then initialize the timestamp
-    # and occupied/unoccupied text
+
+    # recupère à l'aide de Numpy le cadre de l'image, pour l'afficher ensuite à l'écran
     image = frame.array
 
-    # show the frame
-    Functions.algorithm(image)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+    # affichage du flux vidéo
+    key = cv2.waitKey(1) & 0xFF
 
-    # clear the stream in preparation for the next frame
+    # initialisation du flux
     rawCapture.truncate(0)
 
+    # si la touche q du clavier est appuyée, on sort de la boucle
+    if key == ord("q"):
+        break
