@@ -72,13 +72,14 @@ from imutils.video import FPS
 
 vs = VideoStream(usePiCamera=True, resolution=(1920, 1080)).start()
 time.sleep(2.0)
-fps = FPS().start()
 
 while(1):
     frame = vs.read()
-    cv2.imshow("",frame)
+    Functions.algorithm(frame)
+
     key = cv2.waitKey(1) & 0xFF
 
 
 
 cv2.destroyAllWindows()
+vs.stop()
