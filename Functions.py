@@ -166,7 +166,7 @@ def algorithm(img):
         extracted = crop(original, circles)                                         # Extract the detected circles
         for j in range(np.shape(extracted)[0]):                                     # Loop through the array containing the extracted image
             if extracted[j] is not None:
-                #cv2.imshow("Extracted" + str(j), extracted[j])                      # Show the interesting part
+                cv2.imshow("Extracted" + str(j), extracted[j])                      # Show the interesting part
                 #cv2.moveWindow("Extracted" + str(j), 0, 0)
 
                 img_black = detect_black(extracted[j])
