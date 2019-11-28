@@ -66,13 +66,17 @@ exit(0)
 
 ##### FOR THE RASPBERRY #####
 # import the necessary packages
-
 from imutils.video import VideoStream
 
+# Initialization
 vs = VideoStream(usePiCamera=True, resolution=(1920, 1080)).start()
+
+# Give time to make the focus
 time.sleep(2.0)
 
+
 while(1):
+
     frame = vs.read()
 
     Functions.algorithm(frame)
