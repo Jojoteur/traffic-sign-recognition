@@ -77,7 +77,7 @@ camera.framerate = 30
 rawCapture = PiRGBArray(camera, size=(1920, 1080))
 
 # allow the camera to warmup
-time.sleep(0.1)
+time.sleep(2)
 
 # capture frames from the camera
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
