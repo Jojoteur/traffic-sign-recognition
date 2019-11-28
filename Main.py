@@ -65,7 +65,8 @@ exit(0)
 """
 
 ##### FOR THE RASPBERRY #####
-# import the necessary packages
+
+# Import the necessary packages
 from imutils.video import VideoStream
 
 # Initialization
@@ -74,16 +75,14 @@ vs = VideoStream(usePiCamera=True, resolution=(1920, 1080)).start()
 # Give time to make the focus
 time.sleep(2.0)
 
-
 while(1):
 
+    # Reading the flux
     frame = vs.read()
 
     Functions.algorithm(frame)
 
     key = cv2.waitKey(1) & 0xFF
-
-
 
 cv2.destroyAllWindows()
 vs.stop()
