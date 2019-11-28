@@ -66,29 +66,19 @@ exit(0)
 
 ##### FOR THE RASPBERRY #####
 # import the necessary packages
-from picamera.array import PiRGBArray
-from picamera import PiCamera
-import time
 
-# Camera initialization
-camera = PiCamera()
-camera.resolution = (1920, 1080)
-camera.framerate = 30
-rawCapture = PiRGBArray(camera, size=(1920, 1080))
+from imutils.video import VideoStream
+from imutils.video import FPS
 
+vs = VideoStream(usePiCamera=True, resolution=(1920, 1080)).start()
+time.sleep(2.0)
+fps = FPS().start()
 
-# Capturing frames
-for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
-
-    image = frame.array
-
-    Functions.algorithm(image)
-
-    # Wait for key
+while(1):
+    frame = vs.read()
+    cv2.imshow("",frame)
     key = cv2.waitKey(1) & 0xFF
 
-    # clear the stream in preparation for the next frame
-    rawCapture.truncate(0)
 
 
 cv2.destroyAllWindows()
