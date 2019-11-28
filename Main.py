@@ -60,6 +60,9 @@ cv2.destroyAllWindows()
 
 exit(0)
 
+
+
+"""
 """
 ##### FOR THE RASPBERRY #####
 # import the necessary packages
@@ -90,3 +93,15 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
     # clear the stream in preparation for the next frame
     rawCapture.truncate(0)
+"""
+from imutils.video import VideoStream
+from imutils.video import FPS
+
+vs = VideoStream(usePiCamera=True, resolution=(1920, 1080)).start()
+time.sleep(2.0)
+fps = FPS().start()
+
+while (1):
+    frame = vs.read()
+    Functions.algorithm(frame)
+
