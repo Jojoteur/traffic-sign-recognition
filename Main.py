@@ -87,10 +87,8 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
     # show the frame
     Functions.algorithm(image)
-    """
-    if cv2.waitKey(25) & 0xFF == ord('q'):
+    if cv2.waitKey(30) & 0xFF == ord('q'):
         break
-    """
 
     # clear the stream in preparation for the next frame
     rawCapture.truncate(0)
