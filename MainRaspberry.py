@@ -36,6 +36,5 @@ while(1):
     if cv2.waitKey(25) & 0xFF == ord('q'):
         break
 
-
-cv2.destroyAllWindows()
+    cv2.destroyAllWindows()
 vs.stop()
