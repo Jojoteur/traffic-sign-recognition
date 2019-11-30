@@ -13,7 +13,6 @@ import PreProcessing
 import Recognition
 
 
-
 #cap = cv2.VideoCapture(0)
 cap = cv2.VideoCapture("assets/vid1.mov")
 #cap = cv2.VideoCapture("assets/test.mp4")
