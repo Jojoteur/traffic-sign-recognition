@@ -20,10 +20,13 @@ cap = cv2.VideoCapture("assets/vid1.mov")
 cap.set(cv2.CAP_PROP_POS_FRAMES, 380)
 while(cap.isOpened()):
     ret, frame = cap.read()
-    img = PreProcessing.algorithm(frame)
-    if img is not None:
-        number = Recognition.detect_number(img)
-        print(number)
+    imgs = PreProcessing.pre_processing(frame)
+    if imgs is not None:
+        for image in imgs:
+            number = Recognition.detect_number(image)
+            print(number)
+    print("END")
+    print("\n")
     if cv2.waitKey(25) & 0xFF == ord('q'):
         break
 
@@ -33,6 +36,8 @@ cv2.destroyAllWindows()
 
 """
 #### Test with some images ####
+Images = []
+
 Itraffic1 = cv2.imread("assets/Traffic1.jpg", -1)
 Itraffic2 = cv2.imread("assets/Traffic2.jpg", -1)
 Itraffic3 = cv2.imread("assets/Traffic3.jpg", -1)
@@ -49,24 +54,34 @@ Itraffic13 = cv2.imread("assets/Traffic13.jpg", -1)
 
 ref30 = cv2.imread("assets/ref30.jpg", -1)
 
+Images.append(Itraffic1)
+Images.append(Itraffic2)
+Images.append(Itraffic3)
+Images.append(Itraffic4)
+Images.append(Itraffic5)
+Images.append(Itraffic6)
+Images.append(Itraffic7)
+Images.append(Itraffic8)
+Images.append(Itraffic9)
+Images.append(Itraffic10)
+Images.append(Itraffic11)
+Images.append(Itraffic12)
+Images.append(Itraffic13)
 
-Functions.algorithm(Itraffic1)
-Functions.algorithm(Itraffic2)
-Functions.algorithm(Itraffic3)
-Functions.algorithm(Itraffic4)
-Functions.algorithm(Itraffic5)
-Functions.algorithm(Itraffic6)
-Functions.algorithm(Itraffic7)
-Functions.algorithm(Itraffic8)
-Functions.algorithm(Itraffic9)
-Functions.algorithm(Itraffic10)
-Functions.algorithm(Itraffic11)
-Functions.algorithm(Itraffic13)
-Functions.algorithm(Itraffic12)
 
-## END ##
-cv2.waitKey(0)
+for elt in Images:
+    imgs = PreProcessing.pre_processing(elt)
+    if imgs is not None:
+        for image in imgs:
+            txt = Recognition.detect_number(image)
+            print(txt)
+    print("END")
+    print("\n")
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+
 cv2.destroyAllWindows()
-
-exit(0)
 """
+exit(0)
+

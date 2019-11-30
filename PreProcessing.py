@@ -125,6 +125,7 @@ def crop(img, circles):
                 extracted.append(out)
     return extracted
 
+
 def improve(img):
     """
     This function is used to improve the image after black detection (with erosion and dilation)
@@ -137,13 +138,9 @@ def improve(img):
     return 255-img_open
 
 
-
-
-
-
-def algorithm(img):
+def pre_processing(img):
     """
-    Function used to launch the algorithm
+    Function used to launch the pre-processing operation
     """
     #r = np.shape(img)[0]
     #c = np.shape(img)[1]
@@ -165,15 +162,13 @@ def algorithm(img):
     #cv2.moveWindow('Circles detected', 0, 0)
 
     # Then extract the part of the image where circles has been detected
+    to_return = []
     if found>0:
         extracted = crop(original, circles)                                         # Extract the detected circles
         for j in range(np.shape(extracted)[0]):                                     # Loop through the array containing the extracted image
             if extracted[j] is not None:
                 cv2.imshow("Extracted" + str(j), extracted[j])                      # Show the interesting part
                 #cv2.moveWindow("Extracted" + str(j), 0, 0)
-
-
-
 
                 img_black = detect_black(extracted[j])
                 #cv2.imwrite("assets/img_black.png",img_black)
@@ -186,8 +181,8 @@ def algorithm(img):
                 cv2.moveWindow("Improve after black semgentation"  + str(j), 0, 0)
                 #cv2.imwrite("assets/img" + str(j) +".png", img_black)
 
-                return  img_black
 
+                to_return.append(img_black)
                 """
                 if white_pixels(img_black)>0:
                     # we croped the img at the different boundaries
@@ -212,11 +207,7 @@ def algorithm(img):
                 white_pixels(img_black)
                 """
 
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
-
-    print("END")
-    print("\n")
+    return to_return
 
 
 
