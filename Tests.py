@@ -1,24 +1,34 @@
+"""
+This file contain the programm used to make the tests while developing
+
+@authors: BARTH Werner, BRUNET Julien, THOMAS Morgan
+"""
+
 import cv2
-import Functions
 import time
 import cv2
 import os
 
+import PreProcessing
+import Recognition
 
-"""
-cap = cv2.VideoCapture(0)
-#cap = cv2.VideoCapture("assets/vid1.mov")
+
+
+#cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture("assets/vid1.mov")
 #cap = cv2.VideoCapture("assets/test.mp4")
-#cap.set(cv2.CAP_PROP_POS_FRAMES, 380)
+cap.set(cv2.CAP_PROP_POS_FRAMES, 380)
 while(cap.isOpened()):
     ret, frame = cap.read()
-    Functions.algorithm(frame)
+    img = PreProcessing.algorithm(frame)
+    if img is not None:
+        number = Recognition.detect_number(img)
+        print(number)
     if cv2.waitKey(25) & 0xFF == ord('q'):
         break
 
 cap.release()
 cv2.destroyAllWindows()
-"""
 
 
 """
@@ -59,30 +69,4 @@ cv2.waitKey(0)
 cv2.destroyAllWindows()
 
 exit(0)
-
-
-
 """
-
-##### FOR THE RASPBERRY #####
-
-# Import the necessary packages
-from imutils.video import VideoStream
-
-# Initialization
-vs = VideoStream(usePiCamera=True, resolution=(1920, 1080)).start()
-
-# Give time to make the focus
-time.sleep(2.0)
-
-while(1):
-
-    # Reading the flux
-    frame = vs.read()
-
-    Functions.algorithm(frame)
-
-    key = cv2.waitKey(1) & 0xFF
-
-cv2.destroyAllWindows()
-vs.stop()

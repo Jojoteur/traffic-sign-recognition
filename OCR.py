@@ -10,7 +10,7 @@ import sys
 import cv2 
 from numpy import fft,log10,angle,array,zeros,dot,dstack,float32,arange,reshape,savetxt,append,empty,loadtxt,uint8,round,hstack
 
-##############################################Test pytesseract########################
+#############################################Test pytesseract########################
 pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
 image= cv2.imread('70_test.png') 

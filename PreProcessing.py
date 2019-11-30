@@ -138,6 +138,9 @@ def improve(img):
 
 
 
+
+
+
 def algorithm(img):
     """
     Function used to launch the algorithm
@@ -169,6 +172,9 @@ def algorithm(img):
                 cv2.imshow("Extracted" + str(j), extracted[j])                      # Show the interesting part
                 #cv2.moveWindow("Extracted" + str(j), 0, 0)
 
+
+
+
                 img_black = detect_black(extracted[j])
                 #cv2.imwrite("assets/img_black.png",img_black)
                 #cv2.imshow("Black segmentation on extracted " + str(j), img_black)
@@ -179,6 +185,8 @@ def algorithm(img):
                 cv2.imshow("Improve after black semgentation" + str(j), img_black)
                 cv2.moveWindow("Improve after black semgentation"  + str(j), 0, 0)
                 #cv2.imwrite("assets/img" + str(j) +".png", img_black)
+
+                return  img_black
 
                 """
                 if white_pixels(img_black)>0:
@@ -193,10 +201,10 @@ def algorithm(img):
                         img_black=img_black[black_pix_l1:black_pix_l2, black_pix_c1:black_pix_c2]
                         cv2.imshow("Croped black segmentation on extracted" + str(j), img_black)
                         cv2.imwrite("assets/Cropedblack.png", img_black)
-                """
+               
 
 
-                """
+               
                     On ne peut pas utiliser cette fonction pour dire quel chiffre c'est ...
                 (l, h) = np.shape(img_black)
                 img_black = cv2.resize(img_black, (h*10, l*10), interpolation=cv2.INTER_LANCZOS4)
