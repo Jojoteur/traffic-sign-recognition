@@ -13,7 +13,6 @@ from PIL import Image, ImageTk
 from threading import Thread, Event
 from queue import Queue
 
-
 import PreProcessing
 import Recognition
 
@@ -47,9 +46,6 @@ t1.start()
 
 window = tkinter.Tk()
 canvas = tkinter.Canvas(window)
-
-
-
 
 img = ImageTk.PhotoImage(file="assets/blank.jpg")
 sign = tkinter.Label(canvas, image=img)
