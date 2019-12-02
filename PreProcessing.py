@@ -95,7 +95,6 @@ def crop(img, circles):
     :return: extracted: array of images which have been extracted thanks to the array of circles
     """
     extracted = []
-    print(circles)
     if circles is not None:
         for (x, y, r) in circles:
             # Create mask for the circle
@@ -167,7 +166,7 @@ def pre_processing(img):
         extracted = crop(original, circles)                                         # Extract the detected circles
         for j in range(np.shape(extracted)[0]):                                     # Loop through the array containing the extracted image
             if extracted[j] is not None:
-                cv2.imshow("Extracted" + str(j), extracted[j])                      # Show the interesting part
+                #cv2.imshow("Extracted" + str(j), extracted[j])                      # Show the interesting part
                 #cv2.moveWindow("Extracted" + str(j), 0, 0)
 
                 img_black = detect_black(extracted[j])
@@ -177,8 +176,8 @@ def pre_processing(img):
 
 
                 img_black = improve(img_black)
-                cv2.imshow("Improve after black semgentation" + str(j), img_black)
-                cv2.moveWindow("Improve after black semgentation"  + str(j), 0, 0)
+                #cv2.imshow("Improve after black semgentation" + str(j), img_black)
+                #cv2.moveWindow("Improve after black semgentation"  + str(j), 0, 0)
                 #cv2.imwrite("assets/img" + str(j) +".png", img_black)
 
 
