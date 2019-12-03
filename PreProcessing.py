@@ -141,10 +141,10 @@ def pre_processing(img):
     """
     Function used to launch the pre-processing operation
     """
-    #r = np.shape(img)[0]
-    #c = np.shape(img)[1]
-    #show = cv2.resize(img, ((int)(c/4), (int)(r/4)), interpolation=cv2.INTER_LINEAR)
-    #cv2.imshow("Image", show)
+    r = np.shape(img)[0]
+    c = np.shape(img)[1]
+    show = cv2.resize(img, ((int)(c/4), (int)(r/4)), interpolation=cv2.INTER_LINEAR)
+    cv2.imshow("Image", show)
     #cv2.moveWindow("Image", 0, 0)
     #cv2.imshow("Image", show)
     #cv2.moveWindow("Image", 0, 0)

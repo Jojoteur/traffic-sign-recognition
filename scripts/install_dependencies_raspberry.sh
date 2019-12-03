@@ -23,6 +23,7 @@ echo ""
 
 sudo apt-get update && sudo apt-get upgrade -y
 sudo apt-get --yes --force-yes install tesseract-ocr
+sudo apt-get install python3-pil.imagetk
 sudo apt-get --yes --force-yes install libhdf5-dev libhdf5-serial-dev libhdf5-103
 sudo apt-get --yes --force-yes install libqtgui4 libqtwebkit4 libqt4-test python3-pyqt5
 sudo apt-get --yes --force-yes install libatlas-base-dev
@@ -34,6 +35,7 @@ sudo pip install opencv-python
 sudo pip install imutils
 sudo pip install pytesseract
 sudo pip install numpy
+
 
 echo ""
 echo ""

@@ -33,7 +33,7 @@ def application(self):
                 number = Recognition.detect_number(image)
                 event = Event()
                 self.put((number, event))
-
+        print("END")
         if cv2.waitKey(25) & 0xFF == ord('q'):
             break
 
