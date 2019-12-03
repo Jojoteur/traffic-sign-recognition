@@ -50,9 +50,9 @@ def application(self):
         if cv2.waitKey(25) & 0xFF == ord('q'):
             break
 
-        cv2.destroyAllWindows()
-        print("END")
 
+        print("END")
+    cv2.destroyAllWindows()
         """
         # if the `q` key was pressed, break from the loop
         if key == ord("q"):
