@@ -52,12 +52,14 @@ def application(self):
 
 
         print("END")
+
     cv2.destroyAllWindows()
-        """
+
+    """
         # if the `q` key was pressed, break from the loop
         if key == ord("q"):
             break
-        """
+    """
 
 
     """
