@@ -13,11 +13,48 @@ from imutils.video import VideoStream
 from threading import Thread, Event
 from queue import Queue
 
+from picamera.array import PiRGBArray
+from picamera import PiCamera
+
 import PreProcessing
 import Recognition
 
 ##### Program ######
 def application(self):
+    camera = PiCamera()
+    camera.resolution = (640, 480)
+    camera.framerate = 32
+    rawCapture = PiRGBArray(camera, size=(640, 480))
+
+    time.sleep(0.1)
+
+    for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
+        image = frame.array
+
+        """
+        # show the frame
+        cv2.imshow("Frame", image)
+        key = cv2.waitKey(1) & 0xFF
+        """
+        imgs = PreProcessing.pre_processing(image)
+        if imgs is not None:
+            for image in imgs:
+                number = Recognition.detect_number(image)
+                event = Event()
+                self.put((number, event))
+        print("END")
+
+        # clear the stream in preparation for the next frame
+        rawCapture.truncate(0)
+
+        """
+        # if the `q` key was pressed, break from the loop
+        if key == ord("q"):
+            break
+        """
+
+
+    """
     # Initialization
     vs = VideoStream(usePiCamera=True, resolution=(1640, 922)).start()
 
@@ -39,6 +76,7 @@ def application(self):
 
     cv2.destroyAllWindows()
     vs.stop()
+    """
 
 
 ### PROGRAM ###
