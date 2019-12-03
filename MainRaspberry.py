@@ -19,7 +19,7 @@ import Recognition
 ##### Program ######
 def application(self):
     # Initialization
-    vs = VideoStream(usePiCamera=True, resolution=(1920, 1080)).start()
+    vs = VideoStream(usePiCamera=True, resolution=(1640, 922)).start()
 
     # Give time to make the focus
     time.sleep(2.0)
