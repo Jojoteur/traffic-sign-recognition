@@ -9,7 +9,6 @@ import time
 import cv2
 import tkinter as tkinter
 from PIL import Image, ImageTk
-from imutils.video import VideoStream
 from threading import Thread, Event
 from queue import Queue
 
@@ -31,11 +30,6 @@ def application(self):
     for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
         image = frame.array
 
-        """
-        # show the frame
-        cv2.imshow("Frame", image)
-        key = cv2.waitKey(1) & 0xFF
-        """
         imgs = PreProcessing.pre_processing(image)
         if imgs is not None:
             for image in imgs:
@@ -47,47 +41,11 @@ def application(self):
         # clear the stream in preparation for the next frame
         rawCapture.truncate(0)
 
-        """
-        if cv2.waitKey(25) & 0xFF == ord('q'):
-            break
-        """
-
-
         print("END")
+        print("")
+        print("")
 
     cv2.destroyAllWindows()
-
-    """
-        # if the `q` key was pressed, break from the loop
-        if key == ord("q"):
-            break
-    """
-
-
-    """
-    # Initialization
-    vs = VideoStream(usePiCamera=True, resolution=(1640, 922)).start()
-
-    # Give time to make the focus
-    time.sleep(2.0)
-
-    while(1):
-        # Reading the flux
-        frame = vs.read()
-        imgs = PreProcessing.pre_processing(frame)
-        if imgs is not None:
-            for image in imgs:
-                number = Recognition.detect_number(image)
-                event = Event()
-                self.put((number, event))
-        print("END")
-        if cv2.waitKey(25) & 0xFF == ord('q'):
-            break
-
-    cv2.destroyAllWindows()
-    vs.stop()
-    """
-
 
 ### PROGRAM ###
 q = Queue()
