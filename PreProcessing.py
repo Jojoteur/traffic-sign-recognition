@@ -136,7 +136,7 @@ def improve(img):
     img_eroded = cv2.erode(img, mask)
     img_eroded = cv2.erode(img_eroded, mask)
     img_open = cv2.dilate(img_eroded, mask)
-    return img_eroded
+    return img_open
 
 
 def pre_processing(img):
