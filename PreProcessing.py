@@ -135,8 +135,8 @@ def improve(img):
     mask = np.ones((3, 3), np.uint8)
     img_eroded = cv2.erode(img, mask)
     img_eroded = cv2.erode(img_eroded, mask)
-    #img_open = cv2.dilate(img_eroded, mask)
-    return 255-img_eroded
+    img_open = cv2.dilate(img_eroded, mask)
+    return img_eroded
 
 
 def pre_processing(img):
