@@ -33,6 +33,7 @@ def detect_black(img):
     """
     img_HSV = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)                                  # Convert to HSV color-type
 
+    """
     lower_red = np.array([0, 120, 70])                                              # Range for lower red
     upper_red = np.array([10, 255, 255])
     mask1 = cv2.inRange(img_HSV, lower_red, upper_red)
@@ -44,7 +45,7 @@ def detect_black(img):
     mask = mask1 + mask2
 
     img_HSV[mask>0]=[255,255,255]                                                   # Eliminate the red
-
+    """
     lower_black = np.array([0, 0, 0])                                               # Range for lower black
     upper_black = np.array([180, 255, 115])                                         # Range for upper black
 
@@ -146,7 +147,7 @@ def pre_processing(img):
     #show = cv2.resize(img, ((int)(c/4), (int)(r/4)), interpolation=cv2.INTER_LINEAR)
     #cv2.imshow("Image", show)
     #cv2.moveWindow("Image", 0, 0)
-    cv2.imshow("Image", img)
+    #cv2.imshow("Image", img)
     #cv2.moveWindow("Image", 0, 0)
     original = img.copy()
 
@@ -171,7 +172,7 @@ def pre_processing(img):
 
                 img_black = detect_black(extracted[j])
                 #cv2.imwrite("assets/img_black.png",img_black)
-                #cv2.imshow("Black segmentation on extracted " + str(j), img_black)
+                cv2.imshow("Black segmentation on extracted " + str(j), img_black)
                 #cv2.moveWindow("Black segmentation on extracted " + str(j), 0, 0)
 
 
