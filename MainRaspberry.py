@@ -21,9 +21,9 @@ import Recognition
 ##### Program ######
 def application(self):
     camera = PiCamera()
-    camera.resolution = (1280, 720)
+    camera.resolution = (1640, 922)
     camera.framerate = 40
-    rawCapture = PiRGBArray(camera, size=(1280, 720))
+    rawCapture = PiRGBArray(camera, size=(1640, 922))
 
     time.sleep(0.1)
 
