@@ -176,7 +176,7 @@ def pre_processing(img):
                 #cv2.moveWindow("Black segmentation on extracted " + str(j), 0, 0)
 
 
-                img_black = improve(img_black)
+                #img_black = improve(img_black)
                 #cv2.imshow("Improve after black semgentation" + str(j), img_black)
                 #cv2.moveWindow("Improve after black semgentation"  + str(j), 0, 0)
                 #cv2.imwrite("assets/img" + str(j) +".png", img_black)
