@@ -10,11 +10,11 @@ def detect_red(img):
     """
     img_HSV = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)                                  # Convert to HSV color-type
 
-    lower_red = np.array([0, 70, 50])                                              # Range for lower red
+    lower_red = np.array([0, 120, 70])  # Range for lower red
     upper_red = np.array([10, 255, 255])
     mask1 = cv2.inRange(img_HSV, lower_red, upper_red)
 
-    lower_red = np.array([170, 70, 50])                                            # Range for upper red
+    lower_red = np.array([170, 120, 70])  # Range for upper red
     upper_red = np.array([180, 255, 255])
     mask2 = cv2.inRange(img_HSV, lower_red, upper_red)
 
@@ -33,11 +33,12 @@ def detect_black(img):
     """
     img_HSV = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)                                  # Convert to HSV color-type
 
-    lower_red = np.array([0, 70, 50])  # Range for lower red
+
+    lower_red = np.array([0, 120, 70])                                              # Range for lower red
     upper_red = np.array([10, 255, 255])
     mask1 = cv2.inRange(img_HSV, lower_red, upper_red)
 
-    lower_red = np.array([170, 70, 50])  # Range for upper red
+    lower_red = np.array([170, 120, 70])                                            # Range for upper red
     upper_red = np.array([180, 255, 255])
     mask2 = cv2.inRange(img_HSV, lower_red, upper_red)
 
@@ -175,7 +176,7 @@ def pre_processing(img):
                 #cv2.moveWindow("Black segmentation on extracted " + str(j), 0, 0)
 
 
-                #img_black = improve(img_black)
+                img_black = improve(img_black)
                 #cv2.imshow("Improve after black semgentation" + str(j), img_black)
                 #cv2.moveWindow("Improve after black semgentation"  + str(j), 0, 0)
                 #cv2.imwrite("assets/img" + str(j) +".png", img_black)
