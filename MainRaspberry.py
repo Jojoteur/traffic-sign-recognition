@@ -41,6 +41,9 @@ def application(self):
         # clear the stream in preparation for the next frame
         rawCapture.truncate(0)
 
+        if cv2.waitKey(40) & 0xFF == ord('q'):
+            break
+
         print("END")
         print("")
         print("")
