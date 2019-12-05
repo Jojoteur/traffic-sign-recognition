@@ -17,20 +17,44 @@ import PreProcessing
 import Recognition
 
 
+
+
+cap = cv2.VideoCapture(0)
+#cap = cv2.VideoCapture("assets/vid1.mov")
+#cap = cv2.VideoCapture("assets/test.mp4")
+#cap.set(cv2.CAP_PROP_POS_FRAMES, 380)
+while(cap.isOpened()):
+    ret, frame = cap.read()
+    imgs=[]
+    imgs = PreProcessing.pre_processing(frame)
+    if imgs is not None:
+        for image in imgs:
+            number = Recognition.detect_number(image)
+            print(number)
+
+    #print("END")
+    #print("\n")
+    if cv2.waitKey(25) & 0xFF == ord('q'):
+        break
+cap.release()
+cv2.destroyAllWindows()
+
+
 def application(self):
-    #cap = cv2.VideoCapture(0)
-    cap = cv2.VideoCapture("assets/vid1.mov")
+    cap = cv2.VideoCapture(0)
+    #cap = cv2.VideoCapture("assets/vid1.mov")
     #cap = cv2.VideoCapture("assets/test.mp4")
-    cap.set(cv2.CAP_PROP_POS_FRAMES, 380)
+    #cap.set(cv2.CAP_PROP_POS_FRAMES, 380)
     while(cap.isOpened()):
         ret, frame = cap.read()
+        imgs=[]
         imgs = PreProcessing.pre_processing(frame)
         if imgs is not None:
             for image in imgs:
                 number = Recognition.detect_number(image)
                 #print(number)
                 event = Event()
-                self.put((number,event))
+                self.put(((number,image),event))
 
         #print("END")
         #print("\n")
@@ -39,6 +63,7 @@ def application(self):
     cap.release()
     cv2.destroyAllWindows()
 
+"""
 ### PROGRAM ###
 q = Queue()
 t1 = Thread(target = application, args =(q, ))
@@ -49,36 +74,42 @@ canvas = tkinter.Canvas(window)
 
 img = ImageTk.PhotoImage(file="assets/blank.jpg")
 sign = tkinter.Label(canvas, image=img)
+processed = tkinter.Label(canvas, image=img)
 text = tkinter.Label(window, text="")
 
+
 while 1:
-    number, event = q.get()
-    if number is not None:
-        if number=="30":
-            img = ImageTk.PhotoImage(file="assets/ref30.jpg")
-            sign["image"]=img
-        elif number=="50":
-            img = ImageTk.PhotoImage(file="assets/ref50.jpg")
-            sign["image"]=img
-        elif number=="70":
-            img = ImageTk.PhotoImage(file="assets/ref70.jpg")
-            sign["image"]=img
-        elif number=="90":
-            img = ImageTk.PhotoImage(file="assets/ref90.jpg")
-            sign["image"]=img
-        elif number=="110":
-            img = ImageTk.PhotoImage(file="assets/ref110.jpg")
-            sign["image"]=img
-        elif number=="130":
-            img = ImageTk.PhotoImage(file="assets/ref130.jpg")
-            sign["image"]=img
-        sign.pack()
+    (number,image), event = q.get()
+    print(q.qsize())
+    if image is not None:
+        processed["image"]=ImageTk.PhotoImage(image=Image.fromarray(image))
+        if number is not None:
+            if number=="30":
+                img = ImageTk.PhotoImage(file="assets/ref30.jpg")
+                sign["image"]=img
+            elif number=="50":
+                img = ImageTk.PhotoImage(file="assets/ref50.jpg")
+                sign["image"]=img
+            elif number=="70":
+                img = ImageTk.PhotoImage(file="assets/ref70.jpg")
+                sign["image"]=img
+            elif number=="90":
+                img = ImageTk.PhotoImage(file="assets/ref90.jpg")
+                sign["image"]=img
+            elif number=="110":
+                img = ImageTk.PhotoImage(file="assets/ref110.jpg")
+                sign["image"]=img
+            elif number=="130":
+                img = ImageTk.PhotoImage(file="assets/ref130.jpg")
+                sign["image"]=img
+            sign.pack()
+        processed.pack()
         canvas.pack()
         text["text"]=number
         text.pack()
         window.update()
 
-
+"""
 
 
 

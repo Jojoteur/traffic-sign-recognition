@@ -10,11 +10,11 @@ def detect_red(img):
     """
     img_HSV = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)                                  # Convert to HSV color-type
 
-    lower_red = np.array([0, 120, 70])                                              # Range for lower red
+    lower_red = np.array([0, 70, 50])                                              # Range for lower red
     upper_red = np.array([10, 255, 255])
     mask1 = cv2.inRange(img_HSV, lower_red, upper_red)
 
-    lower_red = np.array([170, 120, 70])                                            # Range for upper red
+    lower_red = np.array([170, 70, 50])                                            # Range for upper red
     upper_red = np.array([180, 255, 255])
     mask2 = cv2.inRange(img_HSV, lower_red, upper_red)
 
@@ -67,12 +67,12 @@ def detect_circles(img, original):
     rows = img.shape[0]
 
     min = 15
-    max = 100
+    max = 1000
     circles = cv2.HoughCircles(                                             # Detect circles thx to Hough-Method
         img,
         cv2.HOUGH_GRADIENT,
         1,
-        rows/6,
+        rows/2,
         param1=200,
         param2=20,
         minRadius=min,
