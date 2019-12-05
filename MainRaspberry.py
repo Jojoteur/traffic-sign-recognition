@@ -101,7 +101,7 @@ def gui():
         window.update()
 
 #### PROGRAM ####
-q1 = Queue()
+q1 = Queue(2)
 q2 = Queue()
 
 t1 = Thread(target = processing, args =(q1,))
