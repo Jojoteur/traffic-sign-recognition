@@ -134,6 +134,7 @@ def improve(img):
     """
     mask = np.ones((3, 3), np.uint8)
     img_eroded = cv2.erode(img, mask)
+    img_eroded = cv2.erode(img_eroded, mask)
     img_open = cv2.dilate(img_eroded, mask)
     return 255-img_open
 
@@ -176,7 +177,7 @@ def pre_processing(img):
                 #cv2.moveWindow("Black segmentation on extracted " + str(j), 0, 0)
 
 
-                #img_black = improve(img_black)
+                img_black = improve(img_black)
                 #cv2.imshow("Improve after black semgentation" + str(j), img_black)
                 #cv2.moveWindow("Improve after black semgentation"  + str(j), 0, 0)
                 #cv2.imwrite("assets/img" + str(j) +".png", img_black)
