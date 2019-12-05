@@ -33,19 +33,18 @@ def detect_black(img):
     """
     img_HSV = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)                                  # Convert to HSV color-type
 
-    """
-    lower_red = np.array([0, 120, 70])                                              # Range for lower red
+    lower_red = np.array([0, 70, 50])  # Range for lower red
     upper_red = np.array([10, 255, 255])
     mask1 = cv2.inRange(img_HSV, lower_red, upper_red)
 
-    lower_red = np.array([170, 120, 70])                                            # Range for upper red
+    lower_red = np.array([170, 70, 50])  # Range for upper red
     upper_red = np.array([180, 255, 255])
     mask2 = cv2.inRange(img_HSV, lower_red, upper_red)
 
     mask = mask1 + mask2
 
     img_HSV[mask>0]=[255,255,255]                                                   # Eliminate the red
-    """
+
     lower_black = np.array([0, 0, 0])                                               # Range for lower black
     upper_black = np.array([180, 255, 115])                                         # Range for upper black
 
