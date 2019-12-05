@@ -14,5 +14,5 @@ elif _platform == "win64":
 
 def detect_number(img):
     image = Image.fromarray(img)
-    result = pytesseract.image_to_string(image, config='--dpi 50') #Try different values
+    result = pytesseract.image_to_string(image, config='--dpi 100') #Try different values
     return result

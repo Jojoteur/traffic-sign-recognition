@@ -164,6 +164,7 @@ def pre_processing(img):
 
     # Then extract the part of the image where circles has been detected
     to_return = []
+    print(found)
     if found>0:
         extracted = crop(original, circles)                                         # Extract the detected circles
         for j in range(np.shape(extracted)[0]):                                     # Loop through the array containing the extracted image
