@@ -152,7 +152,7 @@ def pre_processing(img):
 
     # First highlight red in the image
     img_red = detect_red(img)
-    #cv2.imshow("Red segmentation", img_red)
+    cv2.imshow("Red segmentation", img_red)
     #cv2.moveWindow("Red segmentation", 1000, 0)
 
     # Then detect circles
