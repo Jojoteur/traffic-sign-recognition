@@ -76,6 +76,8 @@ def gui():
     Inside the while loop, it take each number and show a referenced traffic sign in function of the number got.
     """
     # Creating the data base of references for numbers
+    list = []
+
     references_30 = ["30"]
     list.append(references_30)
 
