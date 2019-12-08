@@ -109,7 +109,6 @@ def gui():
     text = tkinter.Label(window, text="")
 
     while 1:
-        print(q2.queue)
         number = q2.get()
         img = GUI.GUI(img, number, list)
         sign["image"] = img
@@ -121,7 +120,7 @@ def gui():
 
 
 ######## RUNNING ########
-q1 = Queue()
+q1 = Queue(2)
 q2 = Queue(1)
 
 t1 = Thread(target = processing, args =(q1,))
