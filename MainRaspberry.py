@@ -121,7 +121,7 @@ def gui():
 
 ######## RUNNING ########
 q1 = Queue(2)
-q2 = Queue()
+q2 = Queue(2)
 
 t1 = Thread(target = processing, args =(q1,))
 t1.start()
