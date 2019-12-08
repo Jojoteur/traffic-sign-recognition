@@ -123,8 +123,8 @@ def gui():
 resolution = (1920, 1080)
 framerate = 30
 
-q1 = Queue(2)
-q2 = Queue(1)
+q1 = Queue()
+q2 = Queue()
 
 t1 = Thread(target = processing, args =(q1,resolution, framerate))
 t1.start()
