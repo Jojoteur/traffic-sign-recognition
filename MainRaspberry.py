@@ -21,7 +21,7 @@ import GUI
 
 
 ######## THREADS DEFINITIONS ########
-def processing(self):
+def processing(self, resolution, framerate):
     """
     This function is the function executed by the first thread, it launch the capture of images by the camera and
     process them by the algorithm established in the file "Processing".
@@ -29,9 +29,9 @@ def processing(self):
     """
     # Camera configuration
     camera = PiCamera()
-    camera.resolution = (1640, 922)
-    camera.framerate = 40
-    rawCapture = PiRGBArray(camera, size=(1640, 922))
+    camera.resolution = resolution
+    camera.framerate = framerate
+    rawCapture = PiRGBArray(camera, size=resolution)
 
     # Give time to make the focus
     time.sleep(2)
@@ -120,10 +120,13 @@ def gui():
 
 
 ######## RUNNING ########
+resolution = (1920, 1080)
+framerate = 30
+
 q1 = Queue(2)
 q2 = Queue(1)
 
-t1 = Thread(target = processing, args =(q1,))
+t1 = Thread(target = processing, args =(q1,resolution, framerate))
 t1.start()
 
 t2 = Thread(target = recognition, args =(q2,))
