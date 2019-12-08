@@ -1,5 +1,6 @@
 """
-This file contain the programm launched by the Raspberry Pi
+This file is the one executed by the Raspberry Pi.
+It contains the threads definition and the execution.
 
 @authors: BARTH Werner, BRUNET Julien, THOMAS Morgan
 """
@@ -19,24 +20,31 @@ import Recognition
 import GUI
 
 
-#### THREADS DEFINITIONS ####
+######## THREADS DEFINITIONS ########
 def processing(self):
+    """
+    This function is the function executed by the first thread, it launch the capture of images by the camera and
+    process them by the algorithm established in the file "Processing".
+    Each image returned by the processing algorithm is put on a queue.
+    """
+    # Camera configuration
     camera = PiCamera()
     camera.resolution = (1640, 922)
     camera.framerate = 40
     rawCapture = PiRGBArray(camera, size=(1640, 922))
 
-    time.sleep(0.1)
+    # Give time to make the focus
+    time.sleep(2)
 
     for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
-        image = frame.array
+        image = frame.array                         # Convert frame to array understood by OpenCv
 
-        imgs = Processing.pre_processing(image)
-        if imgs is not None:
-            self.put(imgs)
+        images = Processing.pre_processing(image)   # Image processing
 
-        # clear the stream in preparation for the next frame
-        rawCapture.truncate(0)
+        if images is not None:
+            self.put(images)
+
+        rawCapture.truncate(0)                      # Clear the stream in preparation for the next frame
 
         if cv2.waitKey(40) & 0xFF == ord('q'):
             break
@@ -49,40 +57,48 @@ def processing(self):
 
 
 def recognition(self):
+    """
+    This function is called by the second thread. It get the images stored in the queue and use the recognition algorithm
+    established in the file "Recognition".
+    Then it put the number in an other queue.
+    """
     while 1:
-        imgs = []
-        imgs = q1.get()
-        if imgs is not None:
-            for image in imgs:
+        images = q1.get()
+        if images is not None:
+            for image in images:
                 number = Recognition.detect_number(image)
                 self.put(number)
 
 
 def gui():
-    list = []
+    """
+    This function is called by the main Thread, it is the GUI.
+    Inside the while loop, it take each number and show a referenced traffic sign in function of the number got.
+    """
+    # Creating the data base of references for numbers
+    references_30 = ["30"]
+    list.append(references_30)
 
-    list_30 = ["30"]
-    list.append(list_30)
-
-    list_50 = [
+    references_50 = [
         "50", "S0", "s0", "S0", "s0",
         "5O", "5o",
         "SO", "So",
         "sO", "so", ]
-    list.append(list_50)
+    list.append(references_50)
 
-    list_70 = ["70"]
-    list.append(list_70)
+    references_70 = ["70"]
+    list.append(references_70)
 
-    list_90 = ["90"]
-    list.append(list_90)
+    references_90 = ["90"]
+    list.append(references_90)
 
-    list_110 = ["110"]
-    list.append(list_110)
+    references_110 = ["110"]
+    list.append(references_110)
 
-    list_130 = ["130"]
-    list.append(list_130)
+    references_130 = ["130"]
+    list.append(references_130)
 
+    # Initializing the GUI
     window = tkinter.Tk()
     canvas = tkinter.Canvas(window)
 
@@ -100,7 +116,8 @@ def gui():
         text.pack()
         window.update()
 
-#### PROGRAM ####
+
+######## RUNNING ########
 q1 = Queue(2)
 q2 = Queue()
 
@@ -111,7 +128,6 @@ t2 = Thread(target = recognition, args =(q2,))
 t2.start()
 
 gui()
-
 
 
 ###### OLD #######
