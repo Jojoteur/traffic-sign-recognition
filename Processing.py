@@ -10,12 +10,12 @@ def detect_red(img):
     """
     img_HSV = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)                                  # Convert to HSV color-type
 
-    lower_red = np.array([0, 120, 70])  # Range for lower red
+    lower_red = np.array([0, 100, 100])  # Range for lower red
     upper_red = np.array([10, 255, 255])
     mask1 = cv2.inRange(img_HSV, lower_red, upper_red)
 
-    lower_red = np.array([170, 120, 70])  # Range for upper red
-    upper_red = np.array([180, 255, 255])
+    lower_red = np.array([160, 100, 100])  # Range for upper red
+    upper_red = np.array([179, 255, 255])
     mask2 = cv2.inRange(img_HSV, lower_red, upper_red)
 
     mask1 = mask1 + mask2                                                           # Generating the final mask
