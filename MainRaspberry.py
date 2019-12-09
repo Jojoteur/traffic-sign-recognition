@@ -109,6 +109,7 @@ def gui():
     text = tkinter.Label(window, text="")
 
     while 1:
+        print(q2.qsize())
         number = q2.get()
         img = GUI.GUI(img, number, list)
         sign["image"] = img
@@ -129,7 +130,7 @@ q2 = Queue()
 t1 = Thread(target = processing, args =(q1,resolution, framerate))
 t1.start()
 
-print(q2.qsize())
+
 t2 = Thread(target = recognition, args =(q2,))
 t2.start()
 
