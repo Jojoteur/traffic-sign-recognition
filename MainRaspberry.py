@@ -57,7 +57,13 @@ def processing(queue1, queue2, resolution, framerate):
         print("END")
         print("")
         print("")
-        i = i+1
+
+        if i<=11:
+            i = i+1
+        else:
+            i=0
+
+
 
     cv2.destroyAllWindows()
 
@@ -130,18 +136,19 @@ def gui():
 resolution = (1920, 1080)
 framerate = 30
 
-q1 = Queue()
-q2 = Queue()
-q3 = Queue()
+processed1 = Queue()                # First queue to contain the images processed by OpenCV
+processed2 = Queue()                # Second queue to contain the images processed by OpenCV
 
-t1 = Thread(target = processing, args =(q1, q2, resolution, framerate))
+recognized = Queue()                # Contains the number recognized by the OCR
+
+t1 = Thread(target = processing, args =(processed1, processed2, resolution, framerate))
 t1.start()
 
 
-t2 = Thread(target = recognition, args =(q3, q1))
+t2 = Thread(target = recognition, args =(recognized, processed1))
 t2.start()
 
-t3 = Thread(target = recognition, args =(q3, q2))
+t3 = Thread(target = recognition, args =(recognized, processed2))
 t3.start()
 
 gui()
