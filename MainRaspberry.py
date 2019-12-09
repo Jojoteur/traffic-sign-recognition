@@ -21,9 +21,11 @@ import GUI
 
 
 ######## THREADS DEFINITIONS ########
-def capture(self, resolution, framerate):
+def processing(self, resolution, framerate):
     """
-    This function is the function executed by the first thread, it only deal with the capture of images by the picam
+    This function is the function executed by the first thread, it launch the capture of images by the camera and
+    process them by the algorithm established in the file "Processing".
+    Each image returned by the processing algorithm is put on a queue.
     """
     # Camera configuration
     camera = PiCamera()
@@ -35,37 +37,28 @@ def capture(self, resolution, framerate):
     time.sleep(2)
 
     for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
-        image = frame.array  # Convert frame to array understood by OpenCv
+        image = frame.array                         # Convert frame to array understood by OpenCv
 
-        self.put(image)
+        images = Processing.pre_processing(image)   # Image processing
 
-        print("CAPTURED")
+        if images is not None:
+            self.put(images)
 
-        rawCapture.truncate(0)
+        rawCapture.truncate(0)                      # Clear the stream in preparation for the next frame
 
-
-def processing(self):
-    """
-    This function is the function executed by the second thrad, it take the images which have been captured to the queue
-    and process
-    """
-    while 1:
-        image = q0.get()
-        results = Processing.pre_processing(image)                      # Image processing
-        if results is not None:
-            self.put(results)
-
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        if cv2.waitKey(40) & 0xFF == ord('q'):
             break
 
-        print("PROCESSED")
+        print("END")
+        print("")
+        print("")
 
     cv2.destroyAllWindows()
 
 
 def recognition(self):
     """
-    This function is called by the last thread. It get the images stored in the queue and use the recognition algorithm
+    This function is called by the second thread. It get the images stored in the queue and use the recognition algorithm
     established in the file "Recognition".
     Then it put the number in an other queue.
     """
@@ -130,14 +123,10 @@ def gui():
 resolution = (1920, 1080)
 framerate = 30
 
-q0 = Queue()
 q1 = Queue()
 q2 = Queue()
 
-t0 = Thread(target = capture, args =(q0, resolution, framerate))
-t0.start()
-
-t1 = Thread(target = processing, args =(q1,))
+t1 = Thread(target = processing, args =(q1,resolution, framerate))
 t1.start()
 
 t2 = Thread(target = recognition, args =(q2,))
