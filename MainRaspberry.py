@@ -109,7 +109,7 @@ def gui():
     text = tkinter.Label(window, text="")
 
     while 1:
-        print("Taille queue :" + q2.qsize())
+        print("Taille queue :",q2.qsize())
         number = q2.get()
         img = GUI.GUI(img, number, list)
         sign["image"] = img
