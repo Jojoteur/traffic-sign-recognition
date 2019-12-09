@@ -41,7 +41,7 @@ def capture(self, resolution, framerate):
 
         print("CAPTURED")
 
-        rawCapture.truncat()
+        rawCapture.truncate(0)
 
 
 def processing(self):
