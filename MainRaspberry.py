@@ -63,6 +63,7 @@ def recognition(self):
     Then it put the number in an other queue.
     """
     while 1:
+        print("Taille queue :",q1.qsize())
         images = q1.get()
         if images is not None:
             for image in images:
@@ -109,7 +110,6 @@ def gui():
     text = tkinter.Label(window, text="")
 
     while 1:
-        print("Taille queue :",q2.qsize())
         number = q2.get()
         img = GUI.GUI(img, number, list)
         sign["image"] = img
