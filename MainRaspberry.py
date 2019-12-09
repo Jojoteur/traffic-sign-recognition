@@ -21,7 +21,7 @@ import GUI
 
 
 ######## THREADS DEFINITIONS ########
-def processing(self, resolution, framerate):
+def processing(queue1, queue2, resolution, framerate):
     """
     This function is the function executed by the first thread, it launch the capture of images by the camera and
     process them by the algorithm established in the file "Processing".
@@ -36,13 +36,18 @@ def processing(self, resolution, framerate):
     # Give time to make the focus
     time.sleep(2)
 
+    i = 0
+
     for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
         image = frame.array                         # Convert frame to array understood by OpenCv
 
         images = Processing.pre_processing(image)   # Image processing
 
         if images is not None:
-            self.put(images)
+            if i%2==0:
+                queue1.put(images)
+            else:
+                queue2.put(images)
 
         rawCapture.truncate(0)                      # Clear the stream in preparation for the next frame
 
@@ -52,19 +57,20 @@ def processing(self, resolution, framerate):
         print("END")
         print("")
         print("")
+        i = i+1
 
     cv2.destroyAllWindows()
 
 
-def recognition(self):
+def recognition(self, q):
     """
     This function is called by the second thread. It get the images stored in the queue and use the recognition algorithm
     established in the file "Recognition".
     Then it put the number in an other queue.
     """
     while 1:
-        print("Taille queue :",q1.qsize())
-        images = q1.get()
+        print("Taille queue :",q.qsize())
+        images = q.get()
         if images is not None:
             for image in images:
                 number = Recognition.detect_number(image)
@@ -110,7 +116,7 @@ def gui():
     text = tkinter.Label(window, text="")
 
     while 1:
-        number = q2.get()
+        number = q3.get()
         img = GUI.GUI(img, number, list)
         sign["image"] = img
         sign.pack()
@@ -126,12 +132,16 @@ framerate = 30
 
 q1 = Queue()
 q2 = Queue()
+q3 = Queue()
 
-t1 = Thread(target = processing, args =(q1,resolution, framerate))
+t1 = Thread(target = processing, args =(q1, q2, resolution, framerate))
 t1.start()
 
 
-t2 = Thread(target = recognition, args =(q2,))
+t2 = Thread(target = recognition, args =(q3, q1))
 t2.start()
+
+t3 = Thread(target = recognition, args =(q3, q2))
+t3.start()
 
 gui()
