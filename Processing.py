@@ -23,7 +23,7 @@ def detect_red(img):
     img_threshold_red = cv2.bitwise_and(img, img, mask=mask1)                       # Detect and keep red
 
     mask = np.ones((3, 3), np.uint8)
-    img_threshold_red = cv2.dilate(img_threshold_red, mask)
+    #img_threshold_red = cv2.dilate(img_threshold_red, mask)
 
     return img_threshold_red
 
