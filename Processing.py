@@ -133,10 +133,10 @@ def improve(img):
     :param img:
     :return:
     """
-    mask = np.ones((3, 3), np.uint8)
+    mask = np.ones((5, 5), np.uint8)
     img_eroded = cv2.erode(img, mask)
-    #img_open = cv2.dilate(img_eroded, mask)
-    return img_eroded
+    img_open = cv2.dilate(img_eroded, mask)
+    return img_open
 
 
 def pre_processing(img):
