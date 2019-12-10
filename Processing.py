@@ -22,6 +22,9 @@ def detect_red(img):
 
     img_threshold_red = cv2.bitwise_and(img, img, mask=mask1)                       # Detect and keep red
 
+    mask = np.ones((3, 3), np.uint8)
+    img_threshold_red = cv2.dilate(img_threshold_red, mask)
+
     return img_threshold_red
 
 
@@ -31,7 +34,9 @@ def detect_black(img):
     :param img: the image where we want to detect black
     :return: img_threshold_black: the image segmented for black
     """
+
     img_HSV = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)                                  # Convert to HSV color-type
+
 
     lower_red = np.array([0, 100, 100])  # Range for lower red
     upper_red = np.array([10, 255, 255])
@@ -43,7 +48,8 @@ def detect_black(img):
 
     mask = mask1 + mask2
 
-    img_HSV[mask>0]=[255,255,255]                                                   # Eliminate the red
+    img_HSV[mask>0]=[0,0,255]                                                       # Eliminate the red
+
 
     lower_black = np.array([0, 0, 0])                                               # Range for lower black
     upper_black = np.array([180, 255, 115])                                         # Range for upper black
@@ -63,10 +69,10 @@ def detect_circles(img, original):
     """
     found = 0
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)                             # Convert to Gray color
-    img = cv2.medianBlur(img, 5)                                            # Apply filter to reduce false circles
+    img = cv2.medianBlur(img, 3)                                            # Apply filter to reduce false circle
     rows = img.shape[0]
 
-    min = 5
+    min = 1
     max = 1000
     circles = cv2.HoughCircles(                                             # Detect circles thx to Hough-Method
         img,
@@ -80,8 +86,10 @@ def detect_circles(img, original):
 
     if circles is not None:                                                 # If at least one circle has been found
         circles = np.round(circles[0, :]).astype("int")
+
         for (x, y, r) in circles:
             cv2.circle(original, (x, y), r, (0, 255, 0), 4)
+
         found = circles.shape[0]
 
     return found, circles, original
@@ -95,14 +103,10 @@ def crop(img, circles):
     :return: extracted: array of images which have been extracted thanks to the array of circles
     """
     extracted = []
+
     if circles is not None:
         for (x, y, r) in circles:
-            # Create mask for the circle
-            mask = np.zeros(img.shape, dtype=np.uint8)
-            mask = 255-mask
-            cv2.circle(mask, (x, y), r, (255, 255, 255), -1, 8, 0)
-            out = cv2.copyTo(img, mask)
-
+            out = img
             height = out.shape[0]
             width = out.shape[1]
 
@@ -112,15 +116,14 @@ def crop(img, circles):
                 h = r
                 w = r
                 out = out[y - h: y + h, x - w: x + w]
-
-                """
                 xc = out.shape[0] / 2
                 yc = out.shape[1] / 2
+
                 for i in range(out.shape[0]):
                     for j in range(out.shape[1]):
-                        if math.sqrt(math.pow((i - xc), 2) + math.pow((j - yc), 2)) >= int(3*r/4):
+                        if math.sqrt(math.pow((i - xc), 2) + math.pow((j - yc), 2)) > r:
                             out[i, j] = [255, 255, 255]
-                """
+
 
                 out = cv2.resize(out, (100, 100), interpolation=cv2.INTER_LINEAR)
                 extracted.append(out)
@@ -133,7 +136,7 @@ def improve(img):
     :param img:
     :return:
     """
-    mask = np.ones((3, 3), np.uint8)
+    mask = np.ones((4, 4), np.uint8)
     img_eroded = cv2.erode(img, mask)
     img_open = cv2.dilate(img_eroded, mask)
     return img_open
@@ -148,18 +151,20 @@ def pre_processing(img):
     #show = cv2.resize(img, ((int)(c/4), (int)(r/4)), interpolation=cv2.INTER_LINEAR)
     #cv2.imshow("Image", show)
     #cv2.moveWindow("Image", 0, 0)
+
     #cv2.imshow("Image", img)
     #cv2.moveWindow("Image", 0, 0)
     original = img.copy()
 
     # First highlight red in the image
     img_red = detect_red(img)
-    #cv2.imshow("Red segmentation", img_red)
-    #cv2.moveWindow("Red segmentation", 1000, 0)
+
+    cv2.imshow("Red segmentation", img_red)
+    cv2.moveWindow("Red segmentation", 1000, 0)
 
     # Then detect circles
     found, circles, drawn = detect_circles(img_red, img)
-    #cv2.imshow("Circles detected", img)
+    cv2.imshow("Circles detected", img)
     #cv2.moveWindow('Circles detected', 0, 0)
 
     # Then extract the part of the image where circles has been detected
