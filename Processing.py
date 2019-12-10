@@ -102,13 +102,7 @@ def crop(img, circles):
 
         for (x, y, r) in circles:
             out = img
-            """
-            # Create mask for the circle
-            mask = np.zeros(img.shape, dtype=np.uint8)
-            mask = 255 - mask
-            cv2.circle(mask, (x, y), r, (255, 255, 255), -1, 8, 0)
-            out = cv2.copyTo(img, mask)
-            """
+
             height = out.shape[0]
             width = out.shape[1]
 
@@ -119,14 +113,14 @@ def crop(img, circles):
                 w = r
                 out = out[y - h: y + h, x - w: x + w]
 
-                """
+
                 xc = out.shape[0] / 2
                 yc = out.shape[1] / 2
                 for i in range(out.shape[0]):
                     for j in range(out.shape[1]):
-                        if math.sqrt(math.pow((i - xc), 2) + math.pow((j - yc), 2)) >= int(3*r/4):
+                        if math.sqrt(math.pow((i - xc), 2) + math.pow((j - yc), 2)) >= int(r):
                             out[i, j] = [255, 255, 255]
-                """
+
 
                 out = cv2.resize(out, (100, 100), interpolation=cv2.INTER_LINEAR)
                 extracted.append(out)
