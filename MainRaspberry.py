@@ -122,7 +122,7 @@ def gui():
     text = tkinter.Label(window, text="")
 
     while 1:
-        number = recognized.get()
+        number = q3.get()
         img = GUI.GUI(img, number, list)
         sign["image"] = img
         sign.pack()
