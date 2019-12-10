@@ -81,8 +81,10 @@ def detect_circles(img, original):
 
     if circles is not None:  # If at least one circle has been found
         circles = np.round(circles[0, :]).astype("int")
+        """
         for (x, y, r) in circles:
             cv2.circle(original, (x, y), r, (0, 255, 0), 4)
+        """
         found = circles.shape[0]
 
     return found, circles, original
@@ -97,13 +99,16 @@ def crop(img, circles):
     """
     extracted = []
     if circles is not None:
+
         for (x, y, r) in circles:
+            out = img
+            """
             # Create mask for the circle
             mask = np.zeros(img.shape, dtype=np.uint8)
             mask = 255 - mask
             cv2.circle(mask, (x, y), r, (255, 255, 255), -1, 8, 0)
             out = cv2.copyTo(img, mask)
-
+            """
             height = out.shape[0]
             width = out.shape[1]
 
