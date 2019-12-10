@@ -118,7 +118,7 @@ def crop(img, circles):
                 yc = out.shape[1] / 2
                 for i in range(out.shape[0]):
                     for j in range(out.shape[1]):
-                        if math.sqrt(math.pow((i - xc), 2) + math.pow((j - yc), 2)) >= int(r):
+                        if math.sqrt(math.pow((i - xc), 2) + math.pow((j - yc), 2)) > int(r):
                             out[i, j] = [255, 255, 255]
 
 

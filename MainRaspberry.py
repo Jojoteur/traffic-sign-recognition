@@ -8,9 +8,11 @@ It contains the threads definition and the execution.
 import time
 import cv2
 import tkinter as tkinter
+from sys import platform as _platform
 from PIL import ImageTk
 from threading import Thread
 from queue import Queue
+import pytesseract
 
 from picamera.array import PiRGBArray
 from picamera import PiCamera
@@ -74,6 +76,16 @@ def recognition(self, q):
     established in the file "Recognition".
     Then it put the number in an other queue.
     """
+
+    if _platform == "linux" or _platform == "linux2":
+        pytesseract.pytesseract.tesseract_cmd = r"/usr/bin/tesseract"
+    elif _platform == "darwin":
+        pytesseract.pytesseract.tesseract_cmd = r"/usr/local/Cellar/tesseract/4.1.0/bin/tesseract"
+    elif _platform == "win32":
+        pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+    elif _platform == "win64":
+        pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+
     while 1:
         print("Taille queue :",q.qsize())
         images = q.get()

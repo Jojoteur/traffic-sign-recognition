@@ -10,6 +10,9 @@ import tkinter
 from PIL import Image,ImageTk
 from threading import Thread, Event
 from queue import Queue
+import pytesseract
+from sys import platform as _platform
+
 
 import Processing
 import Recognition
@@ -73,6 +76,15 @@ Images.append(Itraffic10)
 Images.append(Itraffic11)
 Images.append(Itraffic12)
 Images.append(Itraffic13)
+
+if _platform == "linux" or _platform == "linux2":
+    pytesseract.pytesseract.tesseract_cmd = r"/usr/bin/tesseract"
+elif _platform == "darwin":
+    pytesseract.pytesseract.tesseract_cmd = r"/usr/local/Cellar/tesseract/4.1.0/bin/tesseract"
+elif _platform == "win32":
+    pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+elif _platform == "win64":
+    pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
 
 for elt in Images:
