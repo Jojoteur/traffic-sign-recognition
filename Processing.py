@@ -86,10 +86,10 @@ def detect_circles(img, original):
 
     if circles is not None:                                                 # If at least one circle has been found
         circles = np.round(circles[0, :]).astype("int")
-        """
+
         for (x, y, r) in circles:
             cv2.circle(original, (x, y), r, (0, 255, 0), 4)
-        """
+
         found = circles.shape[0]
 
     return found, circles, original
@@ -159,12 +159,12 @@ def pre_processing(img):
     # First highlight red in the image
     img_red = detect_red(img)
 
-    #cv2.imshow("Red segmentation", img_red)
+    cv2.imshow("Red segmentation", img_red)
     #cv2.moveWindow("Red segmentation", 1000, 0)
 
     # Then detect circles
     found, circles, drawn = detect_circles(img_red, img)
-    #cv2.imshow("Circles detected", img)
+    cv2.imshow("Circles detected", img)
     #cv2.moveWindow('Circles detected', 0, 0)
 
     # Then extract the part of the image where circles has been detected
