@@ -81,10 +81,8 @@ def detect_circles(img, original):
 
     if circles is not None:  # If at least one circle has been found
         circles = np.round(circles[0, :]).astype("int")
-        """
         for (x, y, r) in circles:
             cv2.circle(original, (x, y), r, (0, 255, 0), 4)
-        """
         found = circles.shape[0]
 
     return found, circles, original
@@ -112,7 +110,6 @@ def crop(img, circles):
                 h = r
                 w = r
                 out = out[y - h: y + h, x - w: x + w]
-
 
                 xc = out.shape[0] / 2
                 yc = out.shape[1] / 2
@@ -148,18 +145,18 @@ def pre_processing(img):
     # show = cv2.resize(img, ((int)(c/4), (int)(r/4)), interpolation=cv2.INTER_LINEAR)
     # cv2.imshow("Image", show)
     # cv2.moveWindow("Image", 0, 0)
-    cv2.imshow("Image", img)
+    #cv2.imshow("Image", img)
     # cv2.moveWindow("Image", 0, 0)
     original = img.copy()
 
     # First highlight red in the image
     img_red = detect_red(img)
-    # cv2.imshow("Red segmentation", img_red)
-    # cv2.moveWindow("Red segmentation", 1000, 0)
+    #cv2.imshow("Red segmentation", img_red)
+    #cv2.moveWindow("Red segmentation", 1000, 0)
 
     # Then detect circles
     found, circles, drawn = detect_circles(img_red, img)
-    # cv2.imshow("Circles detected", img)
+    #cv2.imshow("Circles detected", drawn)
     # cv2.moveWindow('Circles detected', 0, 0)
 
     # Then extract the part of the image where circles has been detected
@@ -169,12 +166,12 @@ def pre_processing(img):
         extracted = crop(original, circles)  # Extract the detected circles
         for j in range(np.shape(extracted)[0]):  # Loop through the array containing the extracted image
             if extracted[j] is not None:
-                # cv2.imshow("Extracted" + str(j), extracted[j])                      # Show the interesting part
+                #cv2.imshow("Extracted" + str(j), extracted[j])                      # Show the interesting part
                 # cv2.moveWindow("Extracted" + str(j), 0, 0)
 
                 img_black = detect_black(extracted[j])
                 # cv2.imwrite("assets/img_black.png",img_black)
-                # cv2.imshow("Black segmentation on extracted " + str(j), img_black)
+                #cv2.imshow("Black segmentation on extracted " + str(j), img_black)
                 # cv2.moveWindow("Black segmentation on extracted " + str(j), 0, 0)
 
                 img_black = improve(img_black)

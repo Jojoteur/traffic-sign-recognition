@@ -63,20 +63,24 @@ Itraffic13 = cv2.imread("assets/Traffic13.jpg", -1)
 
 ref30 = cv2.imread("assets/ref30.jpg", -1)
 
+
 Images.append(Itraffic1)
-Images.append(Itraffic2)
+#Images.append(Itraffic2)
 Images.append(Itraffic3)
-Images.append(Itraffic4)
+#Images.append(Itraffic4)
+"""
 Images.append(Itraffic5)
 Images.append(Itraffic6)
 Images.append(Itraffic7)
 Images.append(Itraffic8)
 Images.append(Itraffic9)
+"""
 Images.append(Itraffic10)
+"""
 Images.append(Itraffic11)
 Images.append(Itraffic12)
 Images.append(Itraffic13)
-
+"""
 if _platform == "linux" or _platform == "linux2":
     pytesseract.pytesseract.tesseract_cmd = r"/usr/bin/tesseract"
 elif _platform == "darwin":
