@@ -9,12 +9,29 @@ This Readme is a summary, for more informations, you can read the wiki associate
 ## <ins> Compatibility : </ins>
 This project has been developed to work with **Python 3.7**
 
-It uses some external librairies :
+It uses some external libraries :
 <ul>
-    <li> opencv </li>
-    <li> imutils </li>
-    <li> numpy </li>
-    <li> pytesseract (require tesseract-ocr installed)</li>
+<li> 
+
+[OpenCV](https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_setup/py_intro/py_intro.html) 
+
+</li>
+<li> 
+
+[Immutils](https://github.com/jrosebr1/imutils) 
+
+</li>
+<li> 
+
+[Numpy](https://numpy.org/) 
+
+</li>
+<li> 
+
+[Pyterssarct](https://github.com/madmaze/pytesseract) (based on Tesseract-OCR) 
+
+
+</li>
 </ul>
 
 ## <ins> General Idea : </ins>
@@ -22,6 +39,8 @@ The idea of this project is to make the detection is several steps :
 <ol>
     <li> Detect the red in the image </li>
     <li> Once red has been detected, detect circles </li>
-    <li> Extract the circles (ROI) </li>
-    <li> Extract the number to recognize the number with a specific algorithm [WIP] </li>
+    <li> Extract the circles (region of interest) </li>
+    <li> Perform black detection to only keep the number </li>
+    <li> Use a based OCR algorithm (Tesseract-OCR) to recognize the number </li>
+    <li> Show a reference sign for the number detected </li>
 </ol>

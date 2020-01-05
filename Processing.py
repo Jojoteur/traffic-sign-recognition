@@ -1,13 +1,20 @@
+"""
+This file contains all the functions used to make the image processing before OCR
+
+@authors: BARTH Werner, BRUNET Julien, THOMAS Morgan
+"""
+
+##### IMPORTS #####
 import cv2
 import numpy as np
 import math
 
-
+##### FUNCTIONS #####
 def detect_red(img):
     """
     This function is used to highlight red in image to easily detect circles
     :param img: the image where we want to detect red (sign)
-    :return: img_threshold_red: the image segmented for red
+    :return img_threshold_red: the image segmented for red
     """
     img_HSV = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  # Convert to HSV color-type
 
@@ -30,7 +37,7 @@ def detect_black(img):
     """
     This function is used to highlight black in image to easily detect number
     :param img: the image where we want to detect black
-    :return: img_threshold_black: the image segmented for black
+    :return img_threshold_black: the image segmented for black
     """
     img_HSV = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  # Convert to HSV color-type
 
@@ -59,8 +66,8 @@ def detect_circles(img, original):
     This function is used to detect the circles in an image
     :param img: the image where red has been highlighted and where we want to detect circles
     :param original: the original image where circles will be drawn
-    :return: result: an array of circles (x, y, r) if at least one circle has been found or FALSE if none circle has been found
-    :return: original: the original image with drawn circles to show what circles have been found
+    :return result: an array of circles (x, y, r) if at least one circle has been found or FALSE if none circle has been found
+    :return original: the original image with drawn circles to show what circles have been found
     """
     found = 0
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  # Convert to Gray color
@@ -93,7 +100,7 @@ def crop(img, circles):
     This function is used to crop the circles one they have been detected, the goal is to keep only the number inside the circle
     :param img: original image
     :param circles: array of circles (x, y, r) which have been detected in the orginal image
-    :return: extracted: array of images which have been extracted thanks to the array of circles
+    :return extracted: array of images which have been extracted thanks to the array of circles
     """
     extracted = []
     if circles is not None:
@@ -127,8 +134,8 @@ def crop(img, circles):
 def improve(img):
     """
     This function is used to improve the image after black detection (with erosion and dilation)
-    :param img:
-    :return:
+    :param img: the image where black segmentation has been made
+    :return img_open: the image with erosion and dilation
     """
     mask = np.ones((3, 3), np.uint8)
     img_eroded = cv2.erode(img, mask)
@@ -139,6 +146,8 @@ def improve(img):
 def pre_processing(img):
     """
     Function used to launch the pre-processing operation
+    :param img: the image captured
+    :return signs: array of all images detected as traffic sign
     """
     # r = np.shape(img)[0]
     # c = np.shape(img)[1]
@@ -160,7 +169,7 @@ def pre_processing(img):
     # cv2.moveWindow('Circles detected', 0, 0)
 
     # Then extract the part of the image where circles has been detected
-    to_return = []
+    signs = []
     print(found)
     if found > 0:
         extracted = crop(original, circles)  # Extract the detected circles
@@ -179,7 +188,9 @@ def pre_processing(img):
                 # cv2.moveWindow("Improve after black semgentation"  + str(j), 0, 0)
                 # cv2.imwrite("assets/img" + str(j) +".png", img_black)
 
-                to_return.append(img_black)
+                signs.append(img_black)
+
+                ##### OLD #####
                 """
                 if white_pixels(img_black)>0:
                     # we croped the img at the different boundaries
@@ -195,8 +206,6 @@ def pre_processing(img):
                         cv2.imwrite("assets/Cropedblack.png", img_black)
 
 
-
-
                     On ne peut pas utiliser cette fonction pour dire quel chiffre c'est ...
                 (l, h) = np.shape(img_black)
                 img_black = cv2.resize(img_black, (h*10, l*10), interpolation=cv2.INTER_LANCZOS4)
@@ -204,10 +213,4 @@ def pre_processing(img):
                 white_pixels(img_black)
                 """
 
-    return to_return
-
-
-
-
-
-
+    return signs

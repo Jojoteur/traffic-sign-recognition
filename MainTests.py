@@ -1,26 +1,17 @@
 """
-This file contain the programm used to make the tests while developing
+This file contain the program used to make the tests while developing
 
 @authors: BARTH Werner, BRUNET Julien, THOMAS Morgan
 """
 
-
+##### IMPORTS #####
 import cv2
-import tkinter
-from PIL import Image,ImageTk
-from threading import Thread, Event
-from queue import Queue
 import pytesseract
 from sys import platform as _platform
-
-
 import Processing
 import Recognition
-import GUI
-
 
 #### Test with videos (capture or file) ####
-
 """
 #cap = cv2.VideoCapture(0)
 #cap = cv2.VideoCapture("assets/vid1.mov")
