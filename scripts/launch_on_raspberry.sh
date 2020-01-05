@@ -1,33 +1,16 @@
 clear
 echo ""
 echo ""
-echo "#######################################################################################"
-echo "#######################################################################################"
-echo "###                                                                                 ###"
-echo "###                                                                                 ###"
-echo "###          SCRIPT FOR LAUNCHING TRAFFIC SIGN RECOGNITION PYTHON PROGRAM           ###"
-echo "###                                                                                 ###"
-echo "###                                                                                 ###"
-echo "###                             Last update : 30/11/19                              ###"
-echo "###                             Author : BRUNET Julien                              ###"
-echo "###                                                                                 ###"
-echo "###                                                                                 ###"
-echo "#######################################################################################"
-echo "#######################################################################################"
+echo "This script run the application"
+echo "Created : 30/11/19"
+echo "Updated : 05/01/20"
+echo "Author : BRUNET Julien"
 echo ""
 echo ""
 cd /home/pi/traffic-sign-recognition
 git pull
 sudo find / -type f -name ‘atom.so*’ /usr/lib/arm-linux-gnueabihf/libatomic.so.1.2.0
 LD_PRELOAD=/usr/lib/arm-linux-gnueabihf/libatomic.so.1.2.0 python3 MainRaspberry.py
-
-
-echo "#######################################################################################"
-echo "#######################################################################################"
-echo "###                                                                                 ###"
-echo "###                                                                                 ###"
-echo "###                                   END                                           ###"
-echo "###                                                                                 ###"
-echo "###                                                                                 ###"
-echo "#######################################################################################"
-echo "#######################################################################################"
+echo ""
+echo ""
+echo "End of application"
