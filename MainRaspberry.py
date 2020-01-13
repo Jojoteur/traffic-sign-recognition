@@ -111,19 +111,23 @@ def gui(queue_number):
         "50", "S0", "s0", "S0", "s0",
         "5O", "5o",
         "SO", "So",
-        "sO", "so", ]
+        "sO", "so"]
     list.append(references_50)
 
-    references_70 = ["70"]
+    references_70 = [
+        "70", "7O", "7o"]
     list.append(references_70)
 
-    references_90 = ["90"]
+    references_90 = [
+        "90", "9O", "9o"]
     list.append(references_90)
 
-    references_110 = ["110"]
+    references_110 = [
+        "110", "11O", "11o"]
     list.append(references_110)
 
-    references_130 = ["130"]
+    references_130 = [
+        "130", "13O", "13o"]
     list.append(references_130)
 
     # Initializing the GUI
