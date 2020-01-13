@@ -17,6 +17,7 @@ import Recognition
 #cap = cv2.VideoCapture("assets/vid1.MOV")
 cap = cv2.VideoCapture('http://192.168.0.107:8080/video')
 #cap.set(cv2.CAP_PROP_POS_FRAMES, 380)
+"""
 while(cap.isOpened()):
     ret, frame = cap.read()
     imgs=[]
@@ -28,11 +29,65 @@ while(cap.isOpened()):
 
     #print("END")
     #print("\n")
-    if cv2.waitKey(25) & 0xFF == ord('q'):
+    if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 cap.release()
 cv2.destroyAllWindows()
+"""
+""""
+stream = cv2.VideoCapture('http://192.168.0.107:8080/video')
 
+stream.set(cv2.CAP_PROP_BUFFERSIZE, 1);
+stream.set(cv2.CAP_PROP_FPS, 2);
+stream.set(cv2.CAP_PROP_POS_FRAMES , 1);
+while(cap.isOpened()):
+    r, f = stream.read()
+    cv2.imshow('IP Camera stream', f)
+
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+cap.release()
+cv2.destroyAllWindows()
+"""
+import cv2, queue, threading, time
+
+class VideoCapture:
+  def __init__(self, name):
+    self.cap = cv2.VideoCapture('http://192.168.0.107:8080/video')
+    self.q = queue.Queue()
+    t = threading.Thread(target=self._reader)
+    t.daemon = True
+    t.start()
+
+  # read frames as soon as they are available, keeping only most recent one
+  def _reader(self):
+    while True:
+      ret, frame = self.cap.read()
+      if not ret:
+        break
+      if not self.q.empty():
+        try:
+          self.q.get_nowait()   # discard previous (unprocessed) frame
+        except queue.Empty:
+          pass
+      self.q.put(frame)
+
+  def read(self):
+    return self.q.get()
+
+cap = VideoCapture(0)
+while True:
+  frame = cap.read()
+  imgs = Processing.pre_processing(frame)
+  if imgs is not None:
+      for image in imgs:
+          number = Recognition.detect_number(image)
+          print(number)
+
+  # print("END")
+  # print("\n")
+  if chr(cv2.waitKey(1)&255) == 'q':
+    break
 
 """
 #### Test with some images ####
