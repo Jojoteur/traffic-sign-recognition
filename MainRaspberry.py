@@ -77,7 +77,7 @@ def processing(queue1, queue2, resolution, framerate):
                 queue2.put(images)
         # print("END")
         # print("\n")
-        if cv2.waitKey(25) & 0xFF == ord('q'):
+        if cv2.waitKey(60) & 0xFF == ord('q'):
             break
 
         print("END")
