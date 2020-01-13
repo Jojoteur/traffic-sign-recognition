@@ -158,10 +158,10 @@ recognized = Queue()                # Contains the number recognized by the OCR
 t1 = Thread(target = processing, args =(processed1, processed2, resolution, framerate))
 t1.start()
 
-t2 = Thread(target = recognition, args =(recognized, processed1))
+t2 = Thread(target = recognition, args =(processed1, recognized))
 t2.start()
 
-t3 = Thread(target = recognition, args =(recognized, processed2))
+t3 = Thread(target = recognition, args =(processed2, recognized))
 t3.start()
 
 gui(recognized)
