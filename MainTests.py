@@ -11,6 +11,7 @@ from sys import platform as _platform
 import Processing
 import Recognition
 
+"""
 #### Test with videos (capture or file) ####
 #cap = cv2.VideoCapture(0)
 cap = cv2.VideoCapture("assets/vid1.mov")
@@ -30,9 +31,9 @@ while(cap.isOpened()):
         break
 cap.release()
 cv2.destroyAllWindows()
-
-
 """
+
+
 #### Test with some images ####
 Images = []
 
@@ -93,4 +94,3 @@ for elt in Images:
 cv2.destroyAllWindows()
 exit(0)
 
-"""
