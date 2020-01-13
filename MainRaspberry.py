@@ -92,6 +92,7 @@ def processing(queue1, queue2, resolution, framerate):
             return self.q.get()
 
     cap = VideoCapture(0)
+    i=0;
     while True:
         frame = cap.read()
         images = Processing.pre_processing(frame)  # Image processing
