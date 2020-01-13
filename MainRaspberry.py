@@ -147,8 +147,9 @@ def gui(queue_number):
 
 
 ######## RUNNING ########
-resolution = (1920, 1088)
-framerate = 30
+resolution = (2592, 1944)
+
+framerate = 15
 
 processed1 = Queue()                # First queue to contain the images processed by OpenCV
 processed2 = Queue()                # Second queue to contain the images processed by OpenCV
