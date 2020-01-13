@@ -31,6 +31,7 @@ def processing(queue1, queue2, resolution, framerate):
     :param resolution: the resolution of the camera
     :param framerate: the framerate of the camera
     """
+    """
     # Camera configuration
     camera = PiCamera()
     camera.resolution = resolution
@@ -63,6 +64,33 @@ def processing(queue1, queue2, resolution, framerate):
             i = i+1
         else:
             i=0
+    """
+    i = 0;
+    cap = cv2.VideoCapture('http://192.168.0.107:8080/video')
+    while (cap.isOpened()):
+        ret, frame = cap.read()
+        images = Processing.pre_processing(frame)  # Image processing
+        if images is not None:
+            if i % 2 == 0:
+                queue1.put(images)
+            else:
+                queue2.put(images)
+        # print("END")
+        # print("\n")
+        if cv2.waitKey(25) & 0xFF == ord('q'):
+            break
+
+        print("END")
+        print("")
+        print("")
+
+        # Reset the counter to avoid big number problems
+        if i <= 11:
+            i = i + 1
+        else:
+            i = 0
+
+    cap.release()
 
     cv2.destroyAllWindows()
 
