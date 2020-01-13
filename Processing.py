@@ -137,7 +137,7 @@ def improve(img):
     :param img: the image where black segmentation has been made
     :return img_open: the image with erosion and dilation
     """
-    mask = np.ones((3, 3), np.uint8)
+    mask = np.ones((4, 4), np.uint8)
     img_eroded = cv2.erode(img, mask)
     img_open = cv2.dilate(img_eroded, mask)
     return img_open
