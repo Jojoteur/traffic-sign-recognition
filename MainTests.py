@@ -12,11 +12,9 @@ import Processing
 import Recognition
 
 #### Test with videos (capture or file) ####
-"""
 #cap = cv2.VideoCapture(0)
-#cap = cv2.VideoCapture("assets/vid1.mov")
-cap = cv2.VideoCapture("assets/test.mp4")
-#cap.set(cv2.CAP_PROP_POS_FRAMES, 380)
+cap = cv2.VideoCapture("assets/vid1.mov")
+cap.set(cv2.CAP_PROP_POS_FRAMES, 380)
 while(cap.isOpened()):
     ret, frame = cap.read()
     imgs=[]
@@ -32,9 +30,9 @@ while(cap.isOpened()):
         break
 cap.release()
 cv2.destroyAllWindows()
+
+
 """
-
-
 #### Test with some images ####
 Images = []
 
@@ -95,3 +93,4 @@ for elt in Images:
 cv2.destroyAllWindows()
 exit(0)
 
+"""
