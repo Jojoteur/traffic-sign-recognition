@@ -11,10 +11,10 @@ from sys import platform as _platform
 import Processing
 import Recognition
 
-"""
+
 #### Test with videos (capture or file) ####
 #cap = cv2.VideoCapture(0)
-cap = cv2.VideoCapture("assets/vid1.mov")
+cap = cv2.VideoCapture("assets/vid1.MOV")
 cap.set(cv2.CAP_PROP_POS_FRAMES, 380)
 while(cap.isOpened()):
     ret, frame = cap.read()
@@ -31,9 +31,9 @@ while(cap.isOpened()):
         break
 cap.release()
 cv2.destroyAllWindows()
+
+
 """
-
-
 #### Test with some images ####
 Images = []
 
@@ -41,7 +41,7 @@ Itraffic1 = cv2.imread("assets/Traffic1.jpg", -1)
 Itraffic2 = cv2.imread("assets/Traffic2.jpg", -1)
 Itraffic3 = cv2.imread("assets/Traffic3.jpg", -1)
 Itraffic4 = cv2.imread("assets/Traffic4.jpg", -1)
-Itraffic5 = cv2.imread("assets/Traffic5.jpg", -1)
+Itraffic5 = cv2.imread("assets/Traffic5.JPG", -1)
 Itraffic6 = cv2.imread("assets/Traffic6.jpg", -1)
 Itraffic7 = cv2.imread("assets/Traffic7.jpg", -1)
 Itraffic8 = cv2.imread("assets/Traffic8.jpg", -1)
@@ -50,8 +50,6 @@ Itraffic10 = cv2.imread("assets/Traffic10.jpg", -1)
 Itraffic11 = cv2.imread("assets/Traffic11.jpg", -1)
 Itraffic12 = cv2.imread("assets/Traffic12.jpg", -1)
 Itraffic13 = cv2.imread("assets/Traffic13.jpg", -1)
-
-ref30 = cv2.imread("assets/ref30.jpg", -1)
 
 
 Images.append(Itraffic1)
@@ -93,4 +91,4 @@ for elt in Images:
 
 cv2.destroyAllWindows()
 exit(0)
-
+"""
