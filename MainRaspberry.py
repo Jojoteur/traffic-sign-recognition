@@ -147,7 +147,7 @@ def gui(queue_number):
 
 
 ######## RUNNING ########
-resolution = (2592, 1944)
+resolution = (2592, 1952)
 
 framerate = 15
 
