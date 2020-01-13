@@ -33,6 +33,7 @@ def processing_ip(queue1, queue2, resolution, framerate):
     :param framerate: the framerate of the camera
     """
     import cv2, queue, threading, time
+
     class VideoCapture:
         def __init__(self, name):
             self.cap = cv2.VideoCapture('http://192.168.43.122:8080/video')
@@ -58,7 +59,7 @@ def processing_ip(queue1, queue2, resolution, framerate):
             return self.q.get()
 
     cap = VideoCapture(0)
-    i=0;
+    i = 0
     while True:
         frame = cap.read()
         images = Processing.pre_processing(frame)  # Image processing
@@ -75,6 +76,8 @@ def processing_ip(queue1, queue2, resolution, framerate):
             i = 0
         if chr(cv2.waitKey(1) & 255) == 'q':
             break
+
+    cv2.destroyAllWindows()
 
 
 def processing_picam(queue1, queue2, resolution, framerate):
