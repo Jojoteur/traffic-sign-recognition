@@ -21,8 +21,9 @@ import Recognition
 import GUI
 
 ######## THREADS DEFINITIONS ########
-def processing(queue1, queue2, resolution, framerate):
+def processing_ip(queue1, queue2, resolution, framerate):
     """
+    Processing with the IP Cam
     This function is the function executed by the first thread, it launch the capture of images by the camera and
     process them by the algorithm established in the file "Processing".
     Each image returned by the processing algorithm is put on a queue.
@@ -31,6 +32,61 @@ def processing(queue1, queue2, resolution, framerate):
     :param resolution: the resolution of the camera
     :param framerate: the framerate of the camera
     """
+    import cv2, queue, threading, time
+    class VideoCapture:
+        def __init__(self, name):
+            self.cap = cv2.VideoCapture('http://192.168.43.122:8080/video')
+            self.q = queue.Queue()
+            t = threading.Thread(target=self._reader)
+            t.daemon = True
+            t.start()
+
+        # read frames as soon as they are available, keeping only most recent one
+        def _reader(self):
+            while True:
+                ret, frame = self.cap.read()
+                if not ret:
+                    break
+                if not self.q.empty():
+                    try:
+                        self.q.get_nowait()  # discard previous (unprocessed) frame
+                    except queue.Empty:
+                        pass
+                self.q.put(frame)
+
+        def read(self):
+            return self.q.get()
+
+    cap = VideoCapture(0)
+    i=0;
+    while True:
+        frame = cap.read()
+        images = Processing.pre_processing(frame)  # Image processing
+        if images is not None:
+            if i % 2 == 0:
+                queue1.put(images)
+            else:
+                queue2.put(images)
+
+        # Reset the counter to avoid big number problems
+        if i <= 11:
+            i = i + 1
+        else:
+            i = 0
+        if chr(cv2.waitKey(1) & 255) == 'q':
+            break
+
+
+def processing_picam(queue1, queue2, resolution, framerate):
+    """
+    Processing with the Pi cam
+    This function is the function executed by the first thread, it launch the capture of images by the camera and
+    process them by the algorithm established in the file "Processing".
+    Each image returned by the processing algorithm is put on a queue.
+    :param queue1: the fist queue where to put images detected
+    :param queue2: the second queue where to put images detected
+    :param resolution: the resolution of the camera
+    :param framerate: the framerate of the camera
     """
     # Camera configuration
     camera = PiCamera()
@@ -65,51 +121,6 @@ def processing(queue1, queue2, resolution, framerate):
         else:
             i=0
     cv2.destroyAllWindows()
-    """
-    import cv2, queue, threading, time
-    class VideoCapture:
-        def __init__(self, name):
-            self.cap = cv2.VideoCapture('http://192.168.0.107:8080/video')
-            self.q = queue.Queue()
-            t = threading.Thread(target=self._reader)
-            t.daemon = True
-            t.start()
-
-        # read frames as soon as they are available, keeping only most recent one
-        def _reader(self):
-            while True:
-                ret, frame = self.cap.read()
-                if not ret:
-                    break
-                if not self.q.empty():
-                    try:
-                        self.q.get_nowait()  # discard previous (unprocessed) frame
-                    except queue.Empty:
-                        pass
-                self.q.put(frame)
-
-        def read(self):
-            return self.q.get()
-
-    cap = VideoCapture(0)
-    i=0;
-    while True:
-        frame = cap.read()
-        images = Processing.pre_processing(frame)  # Image processing
-        if images is not None:
-            if i % 2 == 0:
-                queue1.put(images)
-            else:
-                queue2.put(images)
-        # Reset the counter to avoid big number problems
-        if i <= 11:
-            i = i + 1
-        else:
-            i = 0
-        if chr(cv2.waitKey(1) & 255) == 'q':
-            break
-
-
 
 def recognition(queue_images, queue_number):
     """
@@ -204,7 +215,7 @@ processed2 = Queue()                # Second queue to contain the images process
 
 recognized = Queue()                # Contains the number recognized by the OCR
 
-t1 = Thread(target = processing, args =(processed1, processed2, resolution, framerate))
+t1 = Thread(target = processing_ip, args =(processed1, processed2, resolution, framerate))
 t1.start()
 
 t2 = Thread(target = recognition, args =(processed1, recognized))
