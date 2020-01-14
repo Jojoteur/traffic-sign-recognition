@@ -36,8 +36,8 @@ def processing_ip(queue1, queue2, resolution, framerate):
 
     class VideoCapture:
         def __init__(self, name):
-            self.cap = cv2.VideoCapture('http://192.168.0.107:8080/video')
-            #self.cap = cv2.VideoCapture('http://192.168.43.122:8080/video')
+            #self.cap = cv2.VideoCapture('http://192.168.0.107:8080/video')
+            self.cap = cv2.VideoCapture('http://192.168.43.122:8080/video')
             self.q = queue.Queue()
             t = threading.Thread(target=self._reader)
             t.daemon = True
