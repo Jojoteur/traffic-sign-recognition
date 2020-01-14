@@ -19,9 +19,10 @@ from picamera import PiCamera
 import Processing
 import Recognition
 import GUI
+import sys
 
 ######## THREADS DEFINITIONS ########
-def processing_ip(queue1, queue2, resolution, framerate):
+def processing_ip(queue1, queue2):
     """
     Processing with the IP Cam
     This function is the function executed by the first thread, it launch the capture of images by the camera and
@@ -29,16 +30,12 @@ def processing_ip(queue1, queue2, resolution, framerate):
     Each image returned by the processing algorithm is put on a queue.
     :param queue1: the fist queue where to put images detected
     :param queue2: the second queue where to put images detected
-    :param resolution: the resolution of the camera
-    :param framerate: the framerate of the camera
     """
-    import cv2, queue, threading, time, sys
+    import cv2, queue, threading, time
 
     class VideoCapture:
         def __init__(self, name):
             IP = str(sys.argv[1])
-            print(IP)
-            #self.cap = cv2.VideoCapture('http://192.168.0.107:8080/video')
             self.cap = cv2.VideoCapture('http://'+IP+':8080/video')
             self.q = queue.Queue()
             t = threading.Thread(target=self._reader)
@@ -146,6 +143,7 @@ def recognition(queue_images, queue_number):
     elif _platform == "win64":
         pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
+
     # Global loop
     while 1:
         print("Queue size :",queue_images.qsize())
@@ -162,35 +160,6 @@ def gui(queue_number):
     Inside the while loop, it take each number and show a referenced traffic sign in function of the number got.
     :param queue_number: the queue containing the number recognized
     """
-    # Creating the data base of references for numbers
-    list = []
-
-    references_30 = ["30"]
-    list.append(references_30)
-
-    references_50 = [
-        "50", "S0", "s0", "S0", "s0",
-        "5O", "5o",
-        "SO", "So",
-        "sO", "so"]
-    list.append(references_50)
-
-    references_70 = [
-        "70", "7O", "7o"]
-    list.append(references_70)
-
-    references_90 = [
-        "90", "9O", "9o"]
-    list.append(references_90)
-
-    references_110 = [
-        "110", "11O", "11o"]
-    list.append(references_110)
-
-    references_130 = [
-        "130", "13O", "13o"]
-    list.append(references_130)
-
     # Initializing the GUI
     window = tkinter.Tk()
     canvas = tkinter.Canvas(window)
@@ -202,7 +171,7 @@ def gui(queue_number):
     # Global loop
     while 1:
         number = queue_number.get()
-        img = GUI.GUI(img, number, list)
+        img = GUI.GUI(img, number)
         sign["image"] = img
         sign.pack()
         canvas.pack()
@@ -212,16 +181,18 @@ def gui(queue_number):
 
 
 ######## RUNNING ########
-resolution = (1920, 1088)
-
-framerate = 30
 
 processed1 = Queue()                # First queue to contain the images processed by OpenCV
 processed2 = Queue()                # Second queue to contain the images processed by OpenCV
 
-recognized = Queue()                # Contains the number recognized by the OCR
+recognized = Queue()                # Contains the numbers recognized by the OCR
 
-t1 = Thread(target = processing_ip, args =(processed1, processed2, resolution, framerate))
+if sys.argv[1] is not None:
+    t1 = Thread(target = processing_ip, args =(processed1, processed2))
+else:
+    resolution = (1920, 1088)
+    framerate = 30
+    t1 = Thread(target = processing_picam, args=(processed1, processed2, resolution, framerate))
 t1.start()
 
 t2 = Thread(target = recognition, args =(processed1, recognized))

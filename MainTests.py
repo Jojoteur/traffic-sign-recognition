@@ -11,13 +11,13 @@ from sys import platform as _platform
 import Processing
 import Recognition
 
-
+"""
 #### Test with videos (capture or file) ####
 #cap = cv2.VideoCapture(0)
 #cap = cv2.VideoCapture("assets/vid1.MOV")
 cap = cv2.VideoCapture('http://192.168.0.107:8080/video')
 #cap.set(cv2.CAP_PROP_POS_FRAMES, 380)
-"""
+
 while(cap.isOpened()):
     ret, frame = cap.read()
     imgs=[]
@@ -48,7 +48,7 @@ while(cap.isOpened()):
         break
 cap.release()
 cv2.destroyAllWindows()
-"""
+
 import cv2, queue, threading, time
 
 class VideoCapture:
@@ -147,4 +147,4 @@ for elt in Images:
 
 cv2.destroyAllWindows()
 exit(0)
-"""
+

@@ -16,5 +16,5 @@ def detect_number(img):
     :return: the number recognized by OCR
     """
     image = Image.fromarray(img)
-    text = pytesseract.image_to_string(image, config="--dpi 300")
+    text = pytesseract.image_to_string(image, config = '--dpi 300 --psm 11 -c tessedit_do_invert=0  -c tessedit_char_whitelist=0123456789')
     return text
