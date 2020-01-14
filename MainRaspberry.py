@@ -32,26 +32,12 @@ def processing_ip(queue1, queue2, resolution, framerate):
     :param resolution: the resolution of the camera
     :param framerate: the framerate of the camera
     """
-    import cv2, queue, threading, time
-
-    import subprocess
-
-    IP = 0
-
-    for ping in range(1, 255):
-        address = "192.168.43." + str(ping)
-        res = subprocess.call(['ping', '-c', '3', address])
-        if res == 0:
-            print("ping to", address, "OK")
-            IP = address
-            break
-        elif res == 2:
-            print("no response from", address)
-        else:
-            print("ping to", address, "failed!")
+    import cv2, queue, threading, time, sys
 
     class VideoCapture:
         def __init__(self, name):
+            IP = str(sys.argv[1])
+            print(IP)
             #self.cap = cv2.VideoCapture('http://192.168.0.107:8080/video')
             self.cap = cv2.VideoCapture('http://'+IP+':8080/video')
             self.q = queue.Queue()
