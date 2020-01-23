@@ -190,7 +190,7 @@ processed3 = Queue()                # Third queue to contain the images processe
 recognized = Queue()                # Contains the numbers recognized by the OCR
 
 if sys.argv[1] is not None:         # When we want to use an IP Camera
-    t1 = Thread(target = processing_ip, args =(processed1, processed2))
+    t1 = Thread(target = processing_ip, args =(processed1, processed2, processed3))
 else:                               # When we want to use the PI Camera /!\ NO USB !
     resolution = (1920, 1088)
     framerate = 30
