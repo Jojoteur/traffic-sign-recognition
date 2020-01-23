@@ -62,6 +62,7 @@ def processing_ip(queue1, queue2):
     cap = VideoCapture(0)
 
     while receiving:
+        frame = None
         frame = cap.read()
         if frame is not None:
             images = Processing.pre_processing(frame)                       # Image processing
