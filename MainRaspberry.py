@@ -57,7 +57,7 @@ def processing_ip(queue1, queue2):
                 self.q.put(frame)                                       # Put the new frame inside the queue
 
         def read(self):
-            return self.q.get()                                         # Get the frame in the queue
+            return self.q.get(10000)                                     # Get the frame in the queue
 
     cap = VideoCapture(0)
 
