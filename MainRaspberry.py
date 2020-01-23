@@ -22,7 +22,7 @@ import GUI
 import sys
 
 ######## THREADS DEFINITIONS ########
-def processing_ip(queue1, queue2, queue3):
+def processing_ip(queue1, queue2):
     """
     Processing with the IP Cam
     This function is the function executed by the first thread, it launch the capture of images by the camera and
@@ -31,6 +31,8 @@ def processing_ip(queue1, queue2, queue3):
     :param queue1: the fist queue where to put images detected
     :param queue2: the second queue where to put images detected
     """
+    i = 1
+    receiving = True
 
     class VideoCapture:
         def __init__(self, name):
@@ -58,26 +60,31 @@ def processing_ip(queue1, queue2, queue3):
             return self.q.get()                                         # Get the frame in the queue
 
     cap = VideoCapture(0)
-    i = 1
-    while True:
-        frame = cap.read()
-        images = Processing.pre_processing(frame)                       # Image processing
-        # Use 3 queues (3 threads) to make the recognitions (in case of lots images)
-        if images is not None:
-            if i == 1:
-                queue1.put(images)
-            elif i == 2:
-                queue2.put(images)
-            elif i == 3:
-                queue3.put(images)
 
-        if i <= 2:
-            i = i + 1
+    while receiving:
+        frame = cap.read()
+        if frame is not None:
+            images = Processing.pre_processing(frame)                       # Image processing
+            # Use 2 queues (2 threads) to make the recognitions (in case of lots images)
+            if images is not None:
+                if i % 2 == 0:
+                    queue1.put(images)
+                else:
+                    queue2.put(images)
+            if chr(cv2.waitKey(1) & 255) == 'q':
+                break
+            # Reset the counter to avoid big number problems
+            if i <= 11:
+                i = i + 1
+            else:
+                i = 0
         else:
-            i = 0
-        if chr(cv2.waitKey(1) & 255) == 'q':
-            break
+            receiving = False
+
     cv2.destroyAllWindows()
+    queue1.put("END")
+    queue2.put("END")
+    print("--> END OF PROCESSING THREAD")
 
 
 def processing_picam(queue1, queue2, resolution, framerate):
@@ -123,7 +130,12 @@ def processing_picam(queue1, queue2, resolution, framerate):
             i = i+1
         else:
             i=0
+
     cv2.destroyAllWindows()
+    queue1.put("END")
+    queue2.put("END")
+    print("--> END OF PROCESSING THREAD")
+
 
 def recognition(queue_images, queue_number):
     """
@@ -145,13 +157,19 @@ def recognition(queue_images, queue_number):
 
 
     # Global loop
-    while 1:
+    while True:
         print("Queue size :",queue_images.qsize())
         images = queue_images.get()
         if images is not None:
-            for image in images:
-                number = Recognition.detect_number(image)
-                queue_number.put(number)
+            if images != "END":
+                for image in images:
+                    number = Recognition.detect_number(image)
+                    queue_number.put(number)
+            else:
+                break
+
+    queue_number.put("END")
+    print("--> END OF RECOGNITION THREAD")
 
 
 def gui(queue_number):
@@ -169,28 +187,36 @@ def gui(queue_number):
     text = tkinter.Label(window, text="")
 
     # Global loop
-    while 1:
+    while True:
         number = queue_number.get()
-        img = GUI.GUI(img, number)
-        sign["image"] = img
-        sign.pack()
-        canvas.pack()
-        text["text"] = number
-        text.pack()
-        window.update()
+        if number is not None:
+            if number != "END":
+                img = GUI.GUI(img, number)
+                sign["image"] = img
+                sign.pack()
+                canvas.pack()
+                text["text"] = number
+                text.pack()
+                window.update()
+            else:
+                text.destroy()
+                sign.destroy()
+                canvas.destroy()
+                window.destroy()
+                break
+
+    print("--> END OF GUI")
 
 
 ######## RUNNING ########
 
 processed1 = Queue()                # First queue to contain the images processed by OpenCV
 processed2 = Queue()                # Second queue to contain the images processed by OpenCV
-processed3 = Queue()                # Third queue to contain the images processed by OpenCV
-
 
 recognized = Queue()                # Contains the numbers recognized by the OCR
 
-if sys.argv[1] is not None:         # When we want to use an IP Camera
-    t1 = Thread(target = processing_ip, args =(processed1, processed2, processed3))
+if sys.argv is not None:            # When we want to use an IP Camera
+    t1 = Thread(target = processing_ip, args =(processed1, processed2))
 else:                               # When we want to use the PI Camera /!\ NO USB !
     resolution = (1920, 1088)
     framerate = 30
@@ -203,7 +229,11 @@ t2.start()
 t3 = Thread(target = recognition, args =(processed2, recognized))
 t3.start()
 
-t4 = Thread(target = recognition, args =(processed3, recognized))
-t4.start()
-
 gui(recognized)
+
+del processed1
+del processed2
+del recognized
+del t1
+del t2
+del t3
