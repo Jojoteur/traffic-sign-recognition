@@ -16,7 +16,7 @@ def detect_number(image):
     :return: the number recognized by OCR
     """
     ready = Image.fromarray(image)
-    text = pytesseract.image_to_string(ready, config = ' --psm 11  -c tessedit_char_whitelist=0123456789')
+    text = pytesseract.image_to_string(ready, config = '--dpi 300 --psm 11  -c tessedit_char_whitelist=0123456789')
     " -psm 11 : Sparse text. Find as much text as possible in no particular order (See tesseract documentation) "
     " -c tessedit_char_whitelist=0123456789' : detect only digits "
     return text
