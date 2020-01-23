@@ -57,35 +57,28 @@ def processing_ip(queue1, queue2):
                 self.q.put(frame)                                       # Put the new frame inside the queue
 
         def read(self):
-            return self.q.get(10)                                     # Get the frame in the queue (timeout of 10 secs)
+            return self.q.get()                                     # Get the frame in the queue (timeout of 10 secs)
 
     cap = VideoCapture(0)
 
     while receiving:
-        frame = None
         frame = cap.read()
-        if frame is not None:
-            images = Processing.pre_processing(frame)                       # Image processing
-            # Use 2 queues (2 threads) to make the recognitions (in case of lots images)
-            if images is not None:
-                if i % 2 == 0:
-                    queue1.put(images)
-                else:
-                    queue2.put(images)
-            if chr(cv2.waitKey(1) & 255) == 'q':
-                break
-            # Reset the counter to avoid big number problems
-            if i <= 11:
-                i = i + 1
+        images = Processing.pre_processing(frame)                       # Image processing
+        # Use 2 queues (2 threads) to make the recognitions (in case of lots images)
+        if images is not None:
+            if i % 2 == 0:
+                queue1.put(images)
             else:
-                i = 0
+                queue2.put(images)
+        if chr(cv2.waitKey(1) & 255) == 'q':
+            break
+        # Reset the counter to avoid big number problems
+        if i <= 11:
+            i = i + 1
         else:
-            receiving = False
-
+            i = 0
     cv2.destroyAllWindows()
-    queue1.put("END")
-    queue2.put("END")
-    print("--> END OF PROCESSING THREAD")
+
 
 
 def processing_picam(queue1, queue2, resolution, framerate):
@@ -133,9 +126,6 @@ def processing_picam(queue1, queue2, resolution, framerate):
             i=0
 
     cv2.destroyAllWindows()
-    queue1.put("END")
-    queue2.put("END")
-    print("--> END OF PROCESSING THREAD")
 
 
 def recognition(queue_images, queue_number):
@@ -162,15 +152,9 @@ def recognition(queue_images, queue_number):
         print("Queue size :",queue_images.qsize())
         images = queue_images.get()
         if images is not None:
-            if images != "END":
-                for image in images:
-                    number = Recognition.detect_number(image)
-                    queue_number.put(number)
-            else:
-                break
-
-    queue_number.put("END")
-    print("--> END OF RECOGNITION THREAD")
+            for image in images:
+                number = Recognition.detect_number(image)
+                queue_number.put(number)
 
 
 def gui(queue_number):
@@ -191,23 +175,13 @@ def gui(queue_number):
     while True:
         number = queue_number.get()
         if number is not None:
-            if number != "END":
-                img = GUI.GUI(img, number)
-                sign["image"] = img
-                sign.pack()
-                canvas.pack()
-                text["text"] = number
-                text.pack()
-                window.update()
-            else:
-                text.destroy()
-                sign.destroy()
-                canvas.destroy()
-                window.destroy()
-                break
-
-    print("--> END OF GUI")
-
+            img = GUI.GUI(img, number)
+            sign["image"] = img
+            sign.pack()
+            canvas.pack()
+            text["text"] = number
+            text.pack()
+            window.update()
 
 ######## RUNNING ########
 
@@ -231,10 +205,3 @@ t3 = Thread(target = recognition, args =(processed2, recognized))
 t3.start()
 
 gui(recognized)
-
-del processed1
-del processed2
-del recognized
-del t1
-del t2
-del t3
