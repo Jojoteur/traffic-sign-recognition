@@ -28,8 +28,8 @@ def processing_ip(queue1, queue2):
     This function is the function executed by the first thread, it launch the capture of images by the camera and
     process them by the algorithm established in the file "Processing".
     Each image returned by the processing algorithm is put on a queue.
-    :param queue1: the fist queue where to put images detected
-    :param queue2: the second queue where to put images detected
+    :param queue1: the fist queue where to put detected images
+    :param queue2: the second queue where to put detected images
     """
     i = 1
     receiving = True
@@ -78,7 +78,6 @@ def processing_ip(queue1, queue2):
         else:
             i = 0
     cv2.destroyAllWindows()
-
 
 
 def processing_picam(queue1, queue2, resolution, framerate):

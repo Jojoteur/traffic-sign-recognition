@@ -138,7 +138,25 @@ for elt in Images:
     if imgs is not None:
         for image in imgs:
             txt = Recognition.detect_number(image)
-            print("Speed limitation detected: "+ txt + "km/h")
+            if txt is not None:
+                if "10" in txt:
+                    if "110" in txt:
+                        print("@@@@ 110 @@@@")
+                    else:  print("@@@@ 10 @@@@")
+                elif "30" in txt:
+                    print("@@@@ 30 @@@@")
+                elif "45" in txt:
+                    print("@@@@ 45 @@@@")
+                elif "50" in txt:
+                    print("@@@@ 50 @@@@")
+                elif "70" in txt:
+                    print("@@@@ 70 @@@@")
+                elif "80" in txt:
+                    print("@@@@ 80 @@@@")
+                elif "90" in txt:
+                    print("@@@@ 90 @@@@")
+                elif "130" in txt:
+                    print("@@@@ 130 @@@@")
     print("END")
     print("\n")
     cv2.waitKey(0)

@@ -17,22 +17,32 @@ def GUI(img, number):
     """
     if number is not None:
         print(number)
-        if number == "30":
+        if "10" in number:
+            if "110" in number:
+                print("@@@@ 110 @@@@")
+                img = ImageTk.PhotoImage(file="assets/ref110.jpg")
+            else:
+                print("@@@@ 10 @@@@")
+                img = ImageTk.PhotoImage(file="assets/ref10.jpg")
+        elif "30" in number:
             print("@@@@ 30 @@@@")
             img = ImageTk.PhotoImage(file="assets/ref30.jpg")
-        elif number == "50":
+        elif "45" in number:
+            print("@@@@ 45 @@@@")
+            img = ImageTk.PhotoImage(file="assets/ref45.jpg")
+        elif "50" in number:
             print("@@@@ 50 @@@@")
             img = ImageTk.PhotoImage(file="assets/ref50.jpg")
-        elif number == "70":
+        elif "70" in number:
             print("@@@@ 70 @@@@")
             img = ImageTk.PhotoImage(file="assets/ref70.jpg")
-        elif number == "90":
+        elif "80" in number:
+            print("@@@@ 80 @@@@")
+            img = ImageTk.PhotoImage(file="assets/ref80.jpg")
+        elif "90" in number:
             print("@@@@ 90 @@@@")
             img = ImageTk.PhotoImage(file="assets/ref90.jpg")
-        elif number == "110":
-            print("@@@@ 110 @@@@")
-            img = ImageTk.PhotoImage(file="assets/ref110.jpg")
-        elif number == "130":
+        elif "130" in number:
             print("@@@@ 130 @@@@")
             img = ImageTk.PhotoImage(file="assets/ref130.jpg")
     return img
