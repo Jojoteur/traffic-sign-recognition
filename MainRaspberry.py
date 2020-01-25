@@ -30,6 +30,7 @@ def processing_ip(queue1, queue2):
     Each image returned by the processing algorithm is put on a queue.
     :param queue1: the fist queue where to put detected images
     :param queue2: the second queue where to put detected images
+    source used for this function: https://stackoverflow.com/questions/54460797/how-to-disable-buffer-in-opencv-camera
     """
     i = 1
     receiving = True
@@ -129,8 +130,7 @@ def processing_picam(queue1, queue2, resolution, framerate):
 
 def recognition(queue_images, queue_number):
     """
-    This gets the images stored in the queue and use the recognition algorithm
-    established in the file "Recognition".
+    This gets the images stored in the queue and use the recognition algorithm established in the file "Recognition".
     Then it put the number in an other queue.
     :param queue_images: the queue containing the images detected
     :param queue_number: the queue containing the number recognized
@@ -159,7 +159,7 @@ def recognition(queue_images, queue_number):
 def gui(queue_number):
     """
     This function is called by the main Thread, it is the GUI.
-    Inside the while loop, it take each number and show a referenced traffic sign in function of the number got.
+    Inside the while loop, it takes each number and shows a referenced traffic sign in function of the number got.
     :param queue_number: the queue containing the number recognized
     """
     # Initializing the GUI
@@ -190,8 +190,10 @@ processed2 = Queue()                # Second queue to contain the images process
 recognized = Queue()                # Contains the numbers recognized by the OCR
 
 if sys.argv is not None:            # When we want to use an IP Camera
+    print("Application launched with IP camera !")
     t1 = Thread(target = processing_ip, args =(processed1, processed2))
 else:                               # When we want to use the PI Camera /!\ NO USB !
+    print("Application launched with Pi Cam !")
     resolution = (1920, 1088)
     framerate = 30
     t1 = Thread(target = processing_picam, args=(processed1, processed2, resolution, framerate))

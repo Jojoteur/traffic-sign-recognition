@@ -1,10 +1,10 @@
 # <ins> Traffic Sign Recognition : </ins>
 
-This project implements a solution for the detection (and recognition of traffic signs) on a Raspberry Pi.  
+This project implements a solution for the detection and recognition of traffic signs on a Raspberry Pi.  
 
 For the moment, we only work on speed limits detection (ie. round with red bounders signs)
 
-This Readme is a summary, for more informations, you can read the wiki associated to the project on the repository : https://gitlab.com/julienbrunet21/traffic-sign-recognition/wikis/wiki/home
+This Readme is a summary, for more information, you can read the [wiki](https://gitlab.com/julienbrunet21/traffic-sign-recognition/wikis/wiki/home) associated to the project on the repository. 
 
 ## <ins> Compatibility : </ins>
 This project has been developed to work with **Python 3.7**
