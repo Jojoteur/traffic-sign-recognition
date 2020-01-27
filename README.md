@@ -9,7 +9,7 @@ This Readme is a summary, for more information, you can read the [wiki](https://
 ## <ins> Compatibility : </ins>
 This project has been developed to work with **Python 3.7**
 
-It uses some external libraries :
+It uses some external libraries:
 <ul>
 <li> 
 
@@ -34,8 +34,8 @@ It uses some external libraries :
 </li>
 </ul>
 
-## <ins> General Idea : </ins>
-The idea of this project is to make the detection is several steps :
+## <ins> General Idea: </ins>
+The idea of this project is to make the detection is several steps:
 <ol>
     <li> Detect the red in the image </li>
     <li> Once red has been detected, detect circles </li>
@@ -44,3 +44,16 @@ The idea of this project is to make the detection is several steps :
     <li> Use a based OCR algorithm (Tesseract-OCR) to recognize the number </li>
     <li> Show a reference sign for the number detected </li>
 </ol>
+
+## <ins> Architecture: </ins>
+<ul>
+    <li>MainTests.py --> contains the code used to test the application in development</li>
+    <li>MainRaspberry.py --> contains the code executed when application launched on Raspberry Pi (threads definition
+    and call to functions)</li>
+    <li>Processing.py --> contains all the function used to pre-process the image before application of OCR</li>
+    <li>Recognition --> contains OCR algorithm code</li>
+    <li>GUI --> contains the graphical interface code</li>
+    <li>OldFunctions.py --> old functions used to develop</li>
+    <li>Scripts --> folder that contains scripts used to install the dependencies and to launch application on Raspberry</li>
+    <li>Assets --> folder that contains file (images and videos) used to test the application</li>
+</ul>

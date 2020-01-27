@@ -5,11 +5,23 @@ This file contain the program used to make the tests while developing
 """
 
 ##### IMPORTS #####
+import tkinter
+
 import cv2
 import pytesseract
 from sys import platform as _platform
+from PIL import ImageTk
 import Processing
 import Recognition
+
+if _platform == "linux" or _platform == "linux2":
+    pytesseract.pytesseract.tesseract_cmd = r"/usr/bin/tesseract"
+elif _platform == "darwin":
+    pytesseract.pytesseract.tesseract_cmd = r"/usr/local/Cellar/tesseract/4.1.0/bin/tesseract"
+elif _platform == "win32":
+    pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+elif _platform == "win64":
+    pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
 """
 #### Test with videos (capture or file) ####
@@ -33,60 +45,6 @@ while(cap.isOpened()):
         break
 cap.release()
 cv2.destroyAllWindows()
-
-stream = cv2.VideoCapture('http://192.168.0.107:8080/video')
-
-stream.set(cv2.CAP_PROP_BUFFERSIZE, 1);
-stream.set(cv2.CAP_PROP_FPS, 2);
-stream.set(cv2.CAP_PROP_POS_FRAMES , 1);
-while(cap.isOpened()):
-    r, f = stream.read()
-    cv2.imshow('IP Camera stream', f)
-
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
-cap.release()
-cv2.destroyAllWindows()
-
-import cv2, queue, threading, time
-
-class VideoCapture:
-  def __init__(self, name):
-    self.cap = cv2.VideoCapture('http://192.168.0.107:8080/video')
-    self.q = queue.Queue()
-    t = threading.Thread(target=self._reader)
-    t.daemon = True
-    t.start()
-
-  # read frames as soon as they are available, keeping only most recent one
-  def _reader(self):
-    while True:
-      ret, frame = self.cap.read()
-      if not ret:
-        break
-      if not self.q.empty():
-        try:
-          self.q.get_nowait()   # discard previous (unprocessed) frame
-        except queue.Empty:
-          pass
-      self.q.put(frame)
-
-  def read(self):
-    return self.q.get()
-
-cap = VideoCapture(0)
-while True:
-  frame = cap.read()
-  imgs = Processing.pre_processing(frame)
-  if imgs is not None:
-      for image in imgs:
-          number = Recognition.detect_number(image)
-          print(number)
-
-  # print("END")
-  # print("\n")
-  if chr(cv2.waitKey(1)&255) == 'q':
-    break
 
 """
 
@@ -120,49 +78,63 @@ Images.append(Itraffic9)
 Images.append(Itraffic10)
 Images.append(Itraffic11)
 Images.append(Itraffic12)
-Images.append(Itraffic13)
 
-if _platform == "linux" or _platform == "linux2":
-    pytesseract.pytesseract.tesseract_cmd = r"/usr/bin/tesseract"
-elif _platform == "darwin":
-    pytesseract.pytesseract.tesseract_cmd = r"/usr/local/Cellar/tesseract/4.1.0/bin/tesseract"
-elif _platform == "win32":
-    pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-elif _platform == "win64":
-    pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+window = tkinter.Tk()
+window.title("Speed limitation")
+canvas = tkinter.Canvas(window)
 
-
+img = ImageTk.PhotoImage(file="assets/blank.jpg")
+sign = tkinter.Label(canvas, image=img)
+text = tkinter.Label(window, text="")
 for elt in Images:
     imgs = Processing.pre_processing(elt)
     print("processed")
+
     if imgs is not None:
         for image in imgs:
-            txt = Recognition.detect_number(image)
-            if txt is not None:
-                if "10" in txt:
-                    if "110" in txt:
+            number = Recognition.detect_number(image)
+            if number is not None:
+                print(number)
+                if "10" in number:
+                    if "110" in number:
                         print("@@@@ 110 @@@@")
-                    else:  print("@@@@ 10 @@@@")
-                elif "30" in txt:
+                        img = ImageTk.PhotoImage(file="assets/ref110.jpg")
+                    else:
+                        print("@@@@ 10 @@@@")
+                        img = ImageTk.PhotoImage(file="assets/ref10.jpg")
+                elif "30" in number:
                     print("@@@@ 30 @@@@")
-                elif "45" in txt:
+                    img = ImageTk.PhotoImage(file="assets/ref30.jpg")
+                elif "45" in number:
                     print("@@@@ 45 @@@@")
-                elif "50" in txt:
+                    img = ImageTk.PhotoImage(file="assets/ref45.jpg")
+                elif "50" in number:
                     print("@@@@ 50 @@@@")
-                elif "70" in txt:
+                    img = ImageTk.PhotoImage(file="assets/ref50.jpg")
+                elif "70" in number:
                     print("@@@@ 70 @@@@")
-                elif "80" in txt:
+                    img = ImageTk.PhotoImage(file="assets/ref70.jpg")
+                elif "80" in number:
                     print("@@@@ 80 @@@@")
-                elif "90" in txt:
+                    img = ImageTk.PhotoImage(file="assets/ref80.jpg")
+                elif "90" in number:
                     print("@@@@ 90 @@@@")
-                elif "130" in txt:
+                    img = ImageTk.PhotoImage(file="assets/ref90.jpg")
+                elif "130" in number:
                     print("@@@@ 130 @@@@")
+                    img = ImageTk.PhotoImage(file="assets/ref130.jpg")
+    sign["image"] = img
+    sign.pack()
+    canvas.pack()
+    text["text"] = number
+    text.pack()
+    window.update()
     print("END")
     print("\n")
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
 
-cv2.destroyAllWindows()
+
 exit(0)
 
