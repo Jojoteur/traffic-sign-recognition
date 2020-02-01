@@ -62,6 +62,7 @@ def process_ip(processed1, processed2):
     cap = VideoCapture(0)
 
     while receiving:
+        cv2.imshow("test",frame)
         frame = cap.read()
         i = 0
         images_speed_limit = Processing.detect_speed_limit(frame)
