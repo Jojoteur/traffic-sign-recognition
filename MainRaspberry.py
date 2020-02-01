@@ -74,9 +74,9 @@ def processing_ip(queue1, queue2):
                 queue2.put((images,"speed_limit"))
         if images_end is not None:
             if i % 2 == 0:
-                queue1.put((images, "speed_limit_end"))
+                queue1.put((images_end, "speed_limit_end"))
             else:
-                queue2.put((images, "speed_limit_end"))
+                queue2.put((images_end, "speed_limit_end"))
         if chr(cv2.waitKey(1) & 255) == 'q':
             break
         # Reset the counter to avoid big number problems
