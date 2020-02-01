@@ -62,9 +62,9 @@ def process_ip(processed1, processed2):
     cap = VideoCapture(0)
 
     while receiving:
-        cv2.imshow("test",frame)
         frame = cap.read()
         i = 0
+        cv2.imshow("test", frame)
         images_speed_limit = Processing.detect_speed_limit(frame)
         images_end_speed_limit = Processing.detect_end_speed_limit(frame)
         # Use 2 queues (2 threads) to make the recognitions (in case of lots images)
