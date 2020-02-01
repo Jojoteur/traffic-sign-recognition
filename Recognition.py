@@ -19,7 +19,7 @@ def detect_number(image):
     """
     # Depending of the platform, the tesseract executable is not located at the same place
     if _platform == "linux" or _platform == "linux2":
-        pytesseract.pytesseract.tesseract_cmd = r"/usr/bin/tesseract"
+        pytesseract.pytesseract.tesseract_cmd = r"/usr/local/bin/tesseract"
     elif _platform == "darwin":
         pytesseract.pytesseract.tesseract_cmd = r"/usr/local/Cellar/tesseract/4.1.0/bin/tesseract"
     elif _platform == "win32":
