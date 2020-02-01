@@ -4,7 +4,7 @@ echo "__________________________________________________"
 echo "| This script downloads and installs dependencies|"
 echo "|          equired to run the application        |"
 echo "|                Created : 30/11/19              |"
-echo "|                Updated : 25/01/20              |"
+echo "|                Updated : 01/02/20              |"
 echo "|              Author : BRUNET Julien            |"
 echo "———————————————————————————————————–––––––––––––––"
 echo ""
@@ -12,7 +12,14 @@ echo "--> Updating the Raspberry Pi"
 sudo apt-get update && sudo apt-get upgrade -y
 echo ""
 echo "--> Downloading and installing tesseract-ocr"
-sudo apt-get --yes --force-yes install tesseract-ocr
+sudo apt-get install automake ca-certificates g++ git libtool libleptonica-dev make pkg-config
+git clone https://github.com/tesseract-ocr/tesseract.git
+cd tesseract
+./autogen.sh
+./configure
+make
+sudo make install
+sudo ldconfig
 echo ""
 echo "--> Downloading and installing libraries for OpenCv"
 sudo apt-get install python3-pil.imagetk

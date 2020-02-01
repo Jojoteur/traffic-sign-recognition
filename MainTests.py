@@ -92,6 +92,7 @@ for elt in Images:
 
     if imgs is not None:
         for image in imgs:
+            cv2.imwrite("test.jpg",image)
             number = Recognition.detect_number(image)
             if number is not None:
                 print(number)

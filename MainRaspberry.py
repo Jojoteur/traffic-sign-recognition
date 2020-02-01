@@ -9,7 +9,6 @@ It contains the threads definition and the execution.
 import time
 import cv2
 import tkinter as tkinter
-from sys import platform as _platform
 from PIL import ImageTk
 from threading import Thread
 from queue import Queue
@@ -106,6 +105,7 @@ def processing_picam(queue1, queue2, resolution, framerate):
     for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
         image = frame.array                         # Convert frame to array understood by OpenCv
         images = Processing.pre_processing(image)   # Image processing
+        #images_end = Processing.pre_processing_end(image)
         if images is not None:
             if i%2==0:
                 queue1.put(images)
@@ -135,16 +135,6 @@ def recognition(queue_images, queue_number):
     :param queue_images: the queue containing the images detected
     :param queue_number: the queue containing the number recognized
     """
-    # Depending of the platform, the tesseract executable is not located at the same place
-    if _platform == "linux" or _platform == "linux2":
-        pytesseract.pytesseract.tesseract_cmd = r"/usr/bin/tesseract"
-    elif _platform == "darwin":
-        pytesseract.pytesseract.tesseract_cmd = r"/usr/local/Cellar/tesseract/4.1.0/bin/tesseract"
-    elif _platform == "win32":
-        pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-    elif _platform == "win64":
-        pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-
 
     # Global loop
     while True:
