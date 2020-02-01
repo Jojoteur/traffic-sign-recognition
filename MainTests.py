@@ -63,9 +63,9 @@ Itraffic9 = cv2.imread("assets/Traffic9.jpg", -1)
 Itraffic10 = cv2.imread("assets/Traffic10.jpg", -1)
 Itraffic11 = cv2.imread("assets/Traffic11.jpg", -1)
 Itraffic12 = cv2.imread("assets/Traffic12.jpg", -1)
-Itraffic13 = cv2.imread("assets/Traffic13.jpeg", -1)
+Itraffic13 = cv2.imread("assets/Traffic13.jpg", -1)
 
-"""
+
 Images.append(Itraffic1)
 Images.append(Itraffic2)
 Images.append(Itraffic3)
@@ -78,9 +78,6 @@ Images.append(Itraffic9)
 Images.append(Itraffic10)
 Images.append(Itraffic11)
 Images.append(Itraffic12)
-"""
-
-Images.append(Itraffic13)
 
 window = tkinter.Tk()
 window.title("Speed limitation")
@@ -90,7 +87,7 @@ img = ImageTk.PhotoImage(file="assets/blank.jpg")
 sign = tkinter.Label(canvas, image=img)
 text = tkinter.Label(window, text="")
 for elt in Images:
-    imgs = Processing.detect_end_speed_limit(elt)
+    imgs = Processing.pre_processing(elt)
     print("processed")
 
     if imgs is not None:

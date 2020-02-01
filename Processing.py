@@ -61,25 +61,6 @@ def detect_black(img):
     return mask
 
 
-def detect_white(img):
-    """
-    This function is used to highlight white in image to easily detect number
-    :param img: the image where we want to detect black
-    :return: img_threshold_black: the image segmented for black
-    """
-    img_HSV = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  # Convert to HSV color-type
-
-    lower_white = np.array([0, 0, 0], dtype=np.uint8)
-    upper_white = np.array([0, 0, 255], dtype=np.uint8)
-    mask = cv2.inRange(img_HSV, lower_white, upper_white)
-
-    # img_HSV[mask>0]=[255,255,255]                                                   # Eliminate the red
-
-    img_threshold_white = cv2.bitwise_and(img, img, mask)
-
-    return img_threshold_white
-
-
 def detect_circles(img, original):
     """
     This function is used to detect the circles in an image
@@ -153,42 +134,6 @@ def crop(img, circles):
     return extracted
 
 
-def end_extractor(img):
-    """
-    This function returns numbers from an end speed limit pannel
-    :param img: image is focused on the pannel
-    :return : image readable for the OCR method
-    """
-    imgray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    ret, thresh = cv2.threshold(imgray, 127, 255, 0)
-    contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    mask = np.zeros_like(imgray)
-
-    panneau2 = img.copy()
-    found, circles, drawn = detect_circles(img, panneau2)
-
-    contours_chiffre = []
-    borne_inf = img.shape[0] / 6
-    borne_sup = img.shape[0] - borne_inf
-
-    for i in range(len(contours)):
-        indent = 0
-        for [[y, x]] in contours[i]:
-            if y > borne_inf and y < borne_sup and x > borne_inf and x < borne_sup:
-                indent = indent + 1
-        if indent == len(contours[i]) and len(contours[i]) > 5:
-            contours_chiffre.append(contours[i])
-
-    cv2.drawContours(mask, contours_chiffre, -1, 255, 2)
-
-    cv2.fillPoly(mask, contours_chiffre, color=(255, 255, 255))
-
-    mask1 = np.ones((6, 6), np.uint8)
-    image_erode = cv2.erode(mask, mask1)
-
-    return image_erode
-
-
 def improve(img):
     """
     This function is used to improve the image after black detection (with erosion and dilation)
@@ -199,83 +144,6 @@ def improve(img):
     img_eroded = cv2.erode(img, mask)
     img_open = cv2.dilate(img_eroded, mask)
     return img_open
-
-
-def detect_speed_limit(img):
-    """
-    Function used to launch the pre-processing operation
-    :param img: the image captured
-    :return signs: array of all images detected as traffic sign
-    """
-    original = img.copy()
-    # cv2.imshow("Image", orginal)
-    # cv2.moveWindow("Image", 0, 0)
-
-    img_red = detect_red(img)  # First highlight red in the image
-    # cv2.imshow("Red segmentation", img_red)
-    # cv2.moveWindow("Red segmentation", 1000, 0)
-
-    found, circles, drawn = detect_circles(img_red, img)  # Then detect circles
-    # cv2.imshow("Circles detected", drawn)
-    # cv2.moveWindow('Circles detected', 0, 0)
-
-    # Then extract the part of the image where circles has been detected
-    signs = []
-    print(found)
-    if found > 0:
-        extracted = crop(original, circles)  # Extract the detected circles
-        for j in range(np.shape(extracted)[0]):  # Loop through the array containing the extracted image
-            if extracted[j] is not None:
-                # cv2.imshow("Extracted" + str(j), extracted[j])
-                # cv2.moveWindow("Extracted" + str(j), 0, 0)
-
-                img_black = detect_black(extracted[j])  # Detect black (the number at the center of the sign)
-                # cv2.imshow("Black segmentation on extracted " + str(j), img_black)
-                # cv2.moveWindow("Black segmentation on extracted " + str(j), 0, 0)
-
-                img_black = improve(img_black)  # Erosion dilation to reducing number of particles
-                cv2.imshow("Improve after black semgentation" + str(j), img_black)
-                # cv2.moveWindow("Improve after black semgentation"  + str(j), 0, 0)
-
-                signs.append(img_black)
-
-    return signs
-
-
-def detect_end_speed_limit(img):
-    original = img.copy()
-
-    im_white = detect_white(img)
-
-    found, circles, drawn = detect_circles(im_white, img)
-
-    signs = []
-    print(found)
-    if found > 0:
-        extracted = crop(original, circles)
-        for j in range(np.shape(extracted)[0]):
-            if extracted[j] is not None:
-                img_extracted = end_extractor(extracted[j])
-                signs.append(img_extracted)
-
-    return signs
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 def pre_processing(img):
