@@ -29,7 +29,6 @@ def detect_number(image):
 
     ready = Image.fromarray(image)
     config = r'--dpi 300 --psm 11 -c tessedit_char_whitelist=0123456789'
-    config =""
     text = pytesseract.image_to_string(ready, config = config)
     " -psm 11 : Sparse text. Find as much text as possible in no particular order (See tesseract documentation) "
     " -c tessedit_char_whitelist=0123456789' : detect only digits "
