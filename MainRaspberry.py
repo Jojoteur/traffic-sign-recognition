@@ -64,12 +64,19 @@ def processing_ip(queue1, queue2):
     while receiving:
         frame = cap.read()
         images = Processing.pre_processing(frame)                       # Image processing
+        images_end = Processing.pre_processing_end(frame)
+
         # Use 2 queues (2 threads) to make the recognitions (in case of lots images)
         if images is not None:
             if i % 2 == 0:
-                queue1.put(images)
+                queue1.put((images,"speed_limit"))
             else:
-                queue2.put(images)
+                queue2.put((images,"speed_limit"))
+        if images_end is not None:
+            if i % 2 == 0:
+                queue1.put((images, "speed_limit_end"))
+            else:
+                queue2.put((images, "speed_limit_end"))
         if chr(cv2.waitKey(1) & 255) == 'q':
             break
         # Reset the counter to avoid big number problems
@@ -105,7 +112,6 @@ def processing_picam(queue1, queue2, resolution, framerate):
     for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
         image = frame.array                         # Convert frame to array understood by OpenCv
         images = Processing.pre_processing(image)   # Image processing
-        #images_end = Processing.pre_processing_end(image)
         if images is not None:
             if i%2==0:
                 queue1.put(images)
@@ -139,11 +145,11 @@ def recognition(queue_images, queue_number):
     # Global loop
     while True:
         print("Queue size :",queue_images.qsize())
-        images = queue_images.get()
+        images, type = queue_images.get()
         if images is not None:
             for image in images:
                 number = Recognition.detect_number(image)
-                queue_number.put(number)
+                queue_number.put((number,type))
 
 
 def gui(queue_number):
@@ -162,9 +168,9 @@ def gui(queue_number):
 
     # Global loop
     while True:
-        number = queue_number.get()
+        number, type = queue_number.get()
         if number is not None:
-            img = GUI.GUI(img, number)
+            img = GUI.GUI(img, number, type)
             sign["image"] = img
             sign.pack()
             canvas.pack()
