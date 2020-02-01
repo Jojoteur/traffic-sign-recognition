@@ -131,8 +131,8 @@ def detect_circles_end(img, original):
     img = cv2.medianBlur(img, 5)                                            # Apply filter to reduce false circles
     rows = img.shape[0]
 
-    min = 15
-    max = 100
+    min = 5
+    max = 1000
     circles = cv2.HoughCircles(                                             # Detect circles thx to Hough-Method
         img,
         cv2.HOUGH_GRADIENT,
