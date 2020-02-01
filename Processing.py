@@ -329,15 +329,13 @@ def pre_processing_end(img):
 
     #cv2.circle(img, (circles[0][0], circles[0][1]), circles[0][2], (0, 255, 0), 2)
 
-    to_return = []
+    signs = []
+
     if found > 0:
         extracted = crop_end(img, circles)
         for j in range(np.shape(extracted)[0]):
             if extracted[j] is not None:
-                to_return.append(extracted[j])
+                image_erode = end_extractor(extracted[j])
+                signs.append(image_erode)
 
-        panneau = to_return[0]
-
-        image_erode = end_extractor(panneau)
-
-    return image_erode
+    return signs
