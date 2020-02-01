@@ -327,7 +327,7 @@ def pre_processing_end(img):
 
     found, circles, drawn = detect_circles_end(detect_blanc_img, img_2)
 
-    cv2.circle(img, (circles[0][0], circles[0][1]), circles[0][2], (0, 255, 0), 2)
+    #cv2.circle(img, (circles[0][0], circles[0][1]), circles[0][2], (0, 255, 0), 2)
 
     to_return = []
     if found > 0:
