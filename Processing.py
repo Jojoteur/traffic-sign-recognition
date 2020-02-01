@@ -61,6 +61,62 @@ def detect_black(img):
     return mask
 
 
+def detect_white(img):
+    """
+    This function is used to highlight white in image to easily detect number
+    :param img: the image where we want to detect black
+    :return: img_threshold_black: the image segmented for black
+    """
+    img_HSV = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  # Convert to HSV color-type
+
+    lower_white = np.array([0, 0, 168], dtype=np.uint8)
+    upper_white = np.array([172, 111, 255], dtype=np.uint8)
+    mask1 = cv2.inRange(img_HSV, lower_white, upper_white)
+
+    # img_HSV[mask>0]=[255,255,255]                                                   # Eliminate the red
+
+    img_threshold_white = cv2.bitwise_and(img, img, mask=mask1)
+
+    return img_threshold_white
+
+
+def end_extractor(img):
+    """
+    This function returns numbers from an end speed limit pannel
+    :param img: image is focused on the pannel
+    :return : image readable for the OCR method
+    """
+    imgray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    ret, thresh = cv2.threshold(imgray, 127, 255, 0)
+    im2, contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+    mask = np.zeros_like(imgray)
+
+    panneau2 = img.copy()
+    found, circles, drawn = detect_circles(img, panneau2)
+
+    contours_chiffre = []
+    borne_inf = img.shape[0] / 6
+    borne_sup = img.shape[0] - borne_inf
+
+    for i in range(len(contours)):
+        indent = 0
+        for [[y, x]] in contours[i]:
+            if y > borne_inf and y < borne_sup and x > borne_inf and x < borne_sup:
+                indent = indent + 1
+        if indent == len(contours[i]) and len(contours[i]) > 5:
+            contours_chiffre.append(contours[i])
+
+    cv2.drawContours(mask, contours_chiffre, -1, 255, 2)
+
+    cv2.fillPoly(mask, contours_chiffre, color=(255, 255, 255))
+
+    mask1 = np.ones((6, 6), np.uint8)
+    image_erode = cv2.erode(mask, mask1)
+
+    return image_erode
+
+
 def detect_circles(img, original):
     """
     This function is used to detect the circles in an image
@@ -184,5 +240,25 @@ def pre_processing(img):
                 #cv2.moveWindow("Improve after black semgentation"  + str(j), 0, 0)
 
                 signs.append(img_black)
+
+    return signs
+
+def morgan(img):
+    detect_blanc_img = detect_white(img)
+
+    img_2 = img.copy()
+
+    found, circles, drawn = detect_circles(detect_blanc_img, img_2)
+
+    cv2.circle(img, (circles[0][0], circles[0][1]), circles[0][2], (0, 255, 0), 2)
+
+    signs = []
+    if found > 0:
+        extracted = crop(img, circles)
+        for j in range(np.shape(extracted)[0]):
+            if extracted[j] is not None:
+
+                image_erode = end_extractor(extracted[j])
+                signs.append(image_erode)
 
     return signs

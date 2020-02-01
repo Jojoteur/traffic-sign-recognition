@@ -64,7 +64,8 @@ def processing_ip(queue1, queue2):
 
     while receiving:
         frame = cap.read()
-        images = Processing.pre_processing(frame)                       # Image processing
+        #images = Processing.pre_processing(frame)                       # Image processing
+        images = Processing.morgan(frame)
         # Use 2 queues (2 threads) to make the recognitions (in case of lots images)
         if images is not None:
             if i % 2 == 0:
