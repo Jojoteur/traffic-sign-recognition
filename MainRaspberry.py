@@ -65,9 +65,10 @@ def processing_ip(queue1, queue2):
         frame = cap.read()
         images = Processing.pre_processing(frame)                       # Image processing
 
-        #images_end = Processing.pre_processing_end(frame)
-
+        #images_end = Processing.pre_processing_end(frame)              # Not stable for now
         images_end = None
+        # TODO : solve end of speed limit detection
+
         # Use 2 queues (2 threads) to make the recognitions (in case of lots images)
         if images is not None:
             if i % 2 == 0:
