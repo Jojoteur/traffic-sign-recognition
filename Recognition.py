@@ -33,7 +33,4 @@ def detect_number(image):
     text = pytesseract.image_to_string(ready, config = config)
     " -psm 11 : Sparse text. Find as much text as possible in no particular order (See tesseract documentation) "
     " -c tessedit_char_whitelist=0123456789' : detect only digits "
-    """
-    !!!! It seems that whitelist doesn't work on Raspberry Pi !!!!
-    """
     return text
