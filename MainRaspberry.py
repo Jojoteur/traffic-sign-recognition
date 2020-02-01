@@ -22,7 +22,7 @@ import GUI
 import sys
 
 ######## THREADS DEFINITIONS ########
-def process_ip(processed1, processed2):
+def processing_ip(queue1, queue2):
     """
     Processing with the IP Cam
     This function is the function executed by the first thread, it launch the capture of images by the camera and
@@ -32,6 +32,7 @@ def process_ip(processed1, processed2):
     :param queue2: the second queue where to put detected images
     source used for this function: https://stackoverflow.com/questions/54460797/how-to-disable-buffer-in-opencv-camera
     """
+    i = 1
     receiving = True
 
     class VideoCapture:
@@ -57,45 +58,30 @@ def process_ip(processed1, processed2):
                 self.q.put(frame)                                       # Put the new frame inside the queue
 
         def read(self):
-            return self.q.get()                                         # Get the frame in the queue (timeout of 10 secs)
+            return self.q.get()                                     # Get the frame in the queue (timeout of 10 secs)
 
     cap = VideoCapture(0)
 
     while receiving:
         frame = cap.read()
-        i = 0
-        cv2.imshow("test", frame)
-        images_speed_limit = Processing.detect_speed_limit(frame)
-        images_end_speed_limit = Processing.detect_end_speed_limit(frame)
+        images = Processing.detect_speed_limit(frame)                       # Image processing
         # Use 2 queues (2 threads) to make the recognitions (in case of lots images)
-        if images_speed_limit is not None:
+        if images is not None:
             if i % 2 == 0:
-                processed1.put((images_speed_limit, "speed_limit"))
+                queue1.put(images)
             else:
-                processed2.put((images_speed_limit, "speed_limit"))
-            i = i + 1
-        if images_end_speed_limit is not None:
-            if i % 2 == 0:
-                processed1.put((images_end_speed_limit, "end_speed_limit"))
-            else:
-                processed2.put((images_end_speed_limit, "end_speed_limit"))
-            i = i + 1
-
+                queue2.put(images)
+        if chr(cv2.waitKey(1) & 255) == 'q':
+            break
         # Reset the counter to avoid big number problems
         if i <= 11:
             i = i + 1
         else:
             i = 0
-
-        if chr(cv2.waitKey(1) & 255) == 'q':
-            break
-
     cv2.destroyAllWindows()
 
 
-
-
-def process_picam(processed1, processed2, resolution, framerate):
+def processing_picam(queue1, queue2, resolution, framerate):
     """
     Processing with the Pi cam
     This function is the function executed by the first thread, it launch the capture of images by the camera and
@@ -114,38 +100,30 @@ def process_picam(processed1, processed2, resolution, framerate):
 
     # Give time to make the focus
     time.sleep(2)
+    i = 0
 
     # Global loop
     for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
         image = frame.array                         # Convert frame to array understood by OpenCv
-        i = 0
-        images_speed_limit = Processing.detect_speed_limit(frame)
-        images_end_speed_limit = Processing.detect_end_speed_limit(frame)
-
-        # Use 2 queues (2 threads) to make the recognitions (in case of lots images)
-        if images_speed_limit is not None:
-            if i % 2 == 0:
-                processed1.put((images_speed_limit, "speed_limit"))
+        images = Processing.pre_processing(image)   # Image processing
+        if images is not None:
+            if i%2==0:
+                queue1.put(images)
             else:
-                processed2.put((images_speed_limit, "speed_limit"))
-            i = i + 1
-        if images_end_speed_limit is not None:
-            if i % 2 == 0:
-                processed1.put((images_end_speed_limit, "end_speed_limit"))
-            else:
-                processed2.put((images_end_speed_limit, "end_speed_limit"))
-            i = i + 1
+                queue2.put(images)
         rawCapture.truncate(0)                     # Clear the stream in preparation for the next frame
-
-        # Reset counter to avoid big number problems
-        if i <= 11:
-            i = i + 1
-        else:
-            i = 0
-
         if cv2.waitKey(40) & 0xFF == ord('q'):
             break
 
+        print("END")
+        print("")
+        print("")
+
+        # Reset the counter to avoid big number problems
+        if i<=11:
+            i = i+1
+        else:
+            i=0
 
     cv2.destroyAllWindows()
 
@@ -171,14 +149,14 @@ def recognition(queue_images, queue_number):
     # Global loop
     while True:
         print("Queue size :",queue_images.qsize())
-        images, type = queue_images.get()
+        images = queue_images.get()
         if images is not None:
             for image in images:
                 number = Recognition.detect_number(image)
-                queue_number.put((number, type))
+                queue_number.put(number)
 
 
-def gui(recognized):
+def gui(queue_number):
     """
     This function is called by the main Thread, it is the GUI.
     Inside the while loop, it takes each number and shows a referenced traffic sign in function of the number got.
@@ -194,9 +172,9 @@ def gui(recognized):
 
     # Global loop
     while True:
-        number, type = recognized.get()
+        number = queue_number.get()
         if number is not None:
-            img = GUI.GUI(img, number, type)
+            img = GUI.GUI(img, number)
             sign["image"] = img
             sign.pack()
             canvas.pack()
@@ -205,6 +183,7 @@ def gui(recognized):
             window.update()
 
 ######## RUNNING ########
+
 processed1 = Queue()                # First queue to contain the images processed by OpenCV
 processed2 = Queue()                # Second queue to contain the images processed by OpenCV
 
@@ -212,20 +191,18 @@ recognized = Queue()                # Contains the numbers recognized by the OCR
 
 if sys.argv is not None:            # When we want to use an IP Camera
     print("Application launched with IP camera !")
-    t1 = Thread(target = process_ip, args = (processed1, processed2))
+    t1 = Thread(target = processing_ip, args =(processed1, processed2))
 else:                               # When we want to use the PI Camera /!\ NO USB !
     print("Application launched with Pi Cam !")
     resolution = (1920, 1088)
     framerate = 30
-    t1 = Thread(target = process_picam, args = (processed1, processed2, resolution, framerate))
+    t1 = Thread(target = processing_picam, args=(processed1, processed2, resolution, framerate))
 t1.start()
-
 
 t2 = Thread(target = recognition, args =(processed1, recognized))
 t2.start()
 
 t3 = Thread(target = recognition, args =(processed2, recognized))
 t3.start()
-
 
 gui(recognized)
