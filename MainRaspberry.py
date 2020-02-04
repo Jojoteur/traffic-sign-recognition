@@ -12,7 +12,6 @@ import tkinter as tkinter
 from PIL import ImageTk
 from threading import Thread
 from queue import Queue
-import pytesseract
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 import Processing
@@ -65,7 +64,7 @@ def processing_ip(queue1, queue2):
         frame = cap.read()
         images = Processing.pre_processing(frame)                       # Image processing
 
-        #images_end = Processing.pre_processing_end(frame)              # Not stable for now
+        #images_end = Processing.pre_processing_end(frame)              # !!! WIP !!!
         images_end = None
         # TODO : solve end of speed limit detection
 
@@ -82,6 +81,7 @@ def processing_ip(queue1, queue2):
                 queue2.put((images_end, "speed_limit_end"))
         if chr(cv2.waitKey(1) & 255) == 'q':
             break
+
         # Reset the counter to avoid big number problems
         if i <= 11:
             i = i + 1
@@ -114,12 +114,23 @@ def processing_picam(queue1, queue2, resolution, framerate):
     # Global loop
     for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
         image = frame.array                         # Convert frame to array understood by OpenCv
+
         images = Processing.pre_processing(image)   # Image processing
+        # images_end = Processing.pre_processing_end(image)              # !!! WIP !!!
+        images_end = None
+        # TODO : solve end of speed limit detection
+
         if images is not None:
-            if i%2==0:
-                queue1.put(images)
+            if i % 2 == 0:
+                queue1.put((images, "speed_limit"))
             else:
-                queue2.put(images)
+                queue2.put((images, "speed_limit"))
+        if images_end is not None:
+            if i % 2 == 0:
+                queue1.put((images_end, "speed_limit_end"))
+            else:
+                queue2.put((images_end, "speed_limit_end"))
+
         rawCapture.truncate(0)                     # Clear the stream in preparation for the next frame
         if cv2.waitKey(40) & 0xFF == ord('q'):
             break

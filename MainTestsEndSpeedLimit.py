@@ -12,8 +12,18 @@ from matplotlib import pyplot as plt
 import pytesseract
 from PIL import Image
 import math
+from sys import platform as _platform
 
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+
+# Depending of the platform, the tesseract executable is not located at the same place
+    if _platform == "linux" or _platform == "linux2":
+        pytesseract.pytesseract.tesseract_cmd = r"/usr/local/bin/tesseract"
+    elif _platform == "darwin":
+        pytesseract.pytesseract.tesseract_cmd = r"/usr/local/Cellar/tesseract/4.1.0/bin/tesseract"
+    elif _platform == "win32":
+        pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+    elif _platform == "win64":
+        pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
 
 def crop_end(img, circles):

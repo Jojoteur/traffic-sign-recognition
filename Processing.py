@@ -306,7 +306,7 @@ def pre_processing(img):
                 #cv2.moveWindow("Black segmentation on extracted " + str(j), 0, 0)
 
                 img_black = improve(img_black)              # Erosion dilation to reducing number of particles
-                cv2.imshow("Improve after black semgentation" + str(j), img_black)
+                cv2.imshow("Out of processing speed limitation" + str(j), img_black)
                 #cv2.moveWindow("Improve after black semgentation"  + str(j), 0, 0)
 
                 signs.append(img_black)
@@ -336,6 +336,7 @@ def pre_processing_end(img):
         for j in range(np.shape(extracted)[0]):
             if extracted[j] is not None:
                 image_erode = end_extractor(extracted[j])
+                cv2.imshow("Out of processing end speed limitation" + str(j), image_erode)
                 signs.append(image_erode)
 
     return signs

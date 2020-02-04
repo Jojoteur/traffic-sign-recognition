@@ -16,7 +16,7 @@ def white_pixels(img):
             if img[x, y] > 50 :
             #if img[x, y] ==255:
                 n = n + 1
-    print"nombre de pixels blanc = ", n
+    print ("nombre de pixels blanc = ", n)
     return n
 
 
@@ -35,15 +35,15 @@ def detect_number(img):
 def validation(nb_white):
     if (nb_white > 175 and nb_white < 180):
         panneau = 30
-        print "La limitation est de                         :" , panneau
+        print ("La limitation est de                         :" , panneau)
 
     if (nb_white > 123 and nb_white < 143):
         panneau = 70
-        print "La limitation est de                         :" , panneau
+        print ("La limitation est de                         :" , panneau)
 
     if (nb_white > 161 and nb_white < 165):
         panneau = 50
-        print "La limitation est de                         :" , panneau
+        print ("La limitation est de                         :" , panneau)
 
 
 def black_pixels_column_1(img):
@@ -60,7 +60,7 @@ def black_pixels_column_1(img):
             if img[x, y] ==255:
                 n = n + 1
                 if n > 5:
-                   print " Column 1 is the  = ", y
+                   print ("Column 1 is the  = ", y)
                    return y
 
 
@@ -78,7 +78,7 @@ def black_pixels_column_2(img):
             if img[x, y] ==0:
                 n = n + 1
                 if n > 95:
-                   print " Culumn 2 is the ", y
+                   print ("Culumn 2 is the ", y)
                    return y
 
 
@@ -96,7 +96,7 @@ def black_pixels_ligne_1(img):
             if img[x, y] ==255:
                 n = n + 1
                 if n > 5:
-                   print " Ligne 1 is the  = ", x
+                   print("Ligne 1 is the  = ", x)
                    return x
 
 
@@ -114,5 +114,5 @@ def black_pixels_ligne_2(img):
             if img[x, y] ==0:
                 n = n + 1
                 if n > 95:
-                   print " Ligne 2 is the ", x
+                   print ("Ligne 2 is the ", x)
                    return x
