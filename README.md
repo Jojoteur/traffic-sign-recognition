@@ -57,3 +57,6 @@ The idea of this project is to make the detection is several steps:
     <li>Scripts --> folder that contains scripts used to install the dependencies and to launch application on Raspberry</li>
     <li>Assets --> folder that contains file (images and videos) used to test the application</li>
 </ul>
+
+## <ins> Execute Application : </ins>
+To launch the application please refer the "Implementation on Raspberry Pi" part on the wiki.

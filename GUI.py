@@ -19,33 +19,26 @@ def GUI(img, number, type):
         # Case of speed limits
         if type == "speed_limit":
             print(number)
-            if "10" in number:
-                if "110" in number:
-                    print("@@@@ 110 @@@@")
-                    img = ImageTk.PhotoImage(file="assets/ref110.jpg")
-                else:
-                    print("@@@@ 10 @@@@")
-                    img = ImageTk.PhotoImage(file="assets/ref10.jpg")
+            if "11" in number or "10" in number:
+                print("@@@@ 110 @@@@")
+                img = ImageTk.PhotoImage(file="assets/ref110.jpg")
             elif "30" in number:
-                if "130" in number:
+                if "130" in number or "13" in number:
                     print("@@@@ 130 @@@@")
                     img = ImageTk.PhotoImage(file="assets/ref130.jpg")
                 else:
                     print("@@@@ 30 @@@@")
                     img = ImageTk.PhotoImage(file="assets/ref30.jpg")
-            elif "45" in number:
-                print("@@@@ 45 @@@@")
-                img = ImageTk.PhotoImage(file="assets/ref45.jpg")
-            elif "50" in number:
+            elif "5" in number:
                 print("@@@@ 50 @@@@")
                 img = ImageTk.PhotoImage(file="assets/ref50.jpg")
-            elif "70" in number:
+            elif "7" in number:
                 print("@@@@ 70 @@@@")
                 img = ImageTk.PhotoImage(file="assets/ref70.jpg")
-            elif "80" in number:
+            elif "8" in number:
                 print("@@@@ 80 @@@@")
                 img = ImageTk.PhotoImage(file="assets/ref80.jpg")
-            elif "90" in number:
+            elif "9" in number:
                 print("@@@@ 90 @@@@")
                 img = ImageTk.PhotoImage(file="assets/ref90.jpg")
         # Case of end speed limits

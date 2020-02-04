@@ -2,7 +2,8 @@
 """
 Created on Sat Dec  7 15:03:37 2019
 
-@author: morga
+@author: morgan
+File used to test the detection of end speed limits
 """
 
 import numpy as np
