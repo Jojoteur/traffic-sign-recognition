@@ -4,7 +4,7 @@ This project implements a solution for the detection and recognition of traffic 
 
 For the moment, we only work on speed limits detection (ie. round with red bounders signs)
 
-This Readme is a summary, for more information, you can read the [wiki](https://gitlab.com/MKallas/traffic-sign-recognition/-/wikis/wiki/home) associated to the project on the repository. 
+This Readme is a summary, for more information, you can read the [wiki](https://gitlab.univ-lorraine.fr/kallas1/traffic-sign-recognition/-/wikis/home) associated to the project on the repository. 
 
 ## <ins> Compatibility : </ins>
 This project has been developed to work with **Python 3.7**
