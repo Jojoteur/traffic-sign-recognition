@@ -5,10 +5,10 @@ This file contains all the functions used to make the image processing before OC
 """
 
 ##### IMPORTS #####
+import math
 import cv2
 import numpy as np
-import math
-
+import Utils
 ##### FUNCTIONS #####
 def detect_red(img):
     """
@@ -284,32 +284,45 @@ def pre_processing(img):
     #cv2.moveWindow("Image", 0, 0)
 
     img_red = detect_red(img)                                       # First highlight red in the image
-    #cv2.imshow("Red segmentation", img_red)
+
     #cv2.moveWindow("Red segmentation", 1000, 0)
 
-    found, circles, drawn = detect_circles(img_red, img)            # Then detect circles
+    shapes, contours = detect_shapes(img_red)
+
+    # found, circles, drawn = detect_circles(img_red, img)            # Then detect circles
     #cv2.imshow("Circles detected", drawn)
     #cv2.moveWindow('Circles detected', 0, 0)
-
-    # Then extract the part of the image where circles has been detected
+    drawing_img = img.copy();
+    Utils.draw_contours(drawing_img, contours, (0,255,0))
+    cv2.imshow("Images avec formes", drawing_img)
     signs = []
-    print(found)
-    if found > 0:
-        extracted = crop(original, circles)         # Extract the detected circles
-        for j in range(np.shape(extracted)[0]):     # Loop through the array containing the extracted image
-            if extracted[j] is not None:
-                #cv2.imshow("Extracted" + str(j), extracted[j])
-                #cv2.moveWindow("Extracted" + str(j), 0, 0)
 
-                img_black = detect_black(extracted[j])      # Detect black (the number at the center of the sign)
-                #cv2.imshow("Black segmentation on extracted " + str(j), img_black)
-                #cv2.moveWindow("Black segmentation on extracted " + str(j), 0, 0)
+    for contour in contours:
+        sign = crop_shape(img, contour)
+        signs.append(sign)
+        cv2.imshow("Crop", sign)
+        cv2.waitKey(0)
+        cv2.destroyWindow("Crop")
+        
+    # Then extract the part of the image where circles has been detected
+    
+    # print(found)
+    # if found > 0:
+    #     extracted = crop(original, circles)         # Extract the detected circles
+    #     for j in range(np.shape(extracted)[0]):     # Loop through the array containing the extracted image
+    #         if extracted[j] is not None:
+    #             #cv2.imshow("Extracted" + str(j), extracted[j])
+    #             #cv2.moveWindow("Extracted" + str(j), 0, 0)
 
-                img_black = improve(img_black)              # Erosion dilation to reducing number of particles
-                cv2.imshow("Out of processing speed limitation" + str(j), img_black)
-                #cv2.moveWindow("Improve after black semgentation"  + str(j), 0, 0)
+    #             img_black = detect_black(extracted[j])      # Detect black (the number at the center of the sign)
+    #             #cv2.imshow("Black segmentation on extracted " + str(j), img_black)
+    #             #cv2.moveWindow("Black segmentation on extracted " + str(j), 0, 0)
 
-                signs.append(img_black)
+    #             img_black = improve(img_black)              # Erosion dilation to reducing number of particles
+    #             cv2.imshow("Out of processing speed limitation" + str(j), img_black)
+    #             #cv2.moveWindow("Improve after black semgentation"  + str(j), 0, 0)
+
+    #             signs.append(img_black)
 
     return signs
 
@@ -340,3 +353,54 @@ def pre_processing_end(img):
                 signs.append(image_erode)
 
     return signs
+
+
+def crop_shape(img, contour):
+    mask = np.zeros_like(img)
+    img_out = np.zeros_like(img)
+    cv2.drawContours(mask, [contour], -1, 255, -1)
+    img_out[mask == 255] = img[mask == 255]
+    (y, x, _) = np.where(mask == 255)
+    (top_y, left_x)= (np.min(y), np.min(x))
+    (bottom_y, right_x)= (np.max(y), np.max(x))
+    return img[top_y:bottom_y, left_x:right_x].copy()
+
+def detect_shapes(img):
+    """
+    Convert the image to a grayscale format.
+    Then detect shapes in a preprocessed image, and draw the found shapes on the original image.
+    """
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    thresh = cv2.threshold(gray, 60, 255, cv2.THRESH_BINARY)[1]
+    contours,_ = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    shapes = []
+    filtered_contours = []
+    for contour in contours:
+        if cv2.contourArea(contour) > 0:
+            shape = identify_shape(contour)
+            if shape is not None:
+                shapes.append(shape)
+                filtered_contours.append(contour)
+
+    return shapes, filtered_contours
+
+def identify_shape(contour):
+    """
+    Identify if a contour is a triangle, a square, an octagon, a circle or nothing.
+    """
+    shape = None
+    perimeter = cv2.arcLength(contour, True)
+    approximation = cv2.approxPolyDP(contour, 0.04*perimeter, True)
+    
+    if len(approximation) == 3:
+        shape = 'triangle'
+    elif len(approximation) == 4:
+        (_, _, w, h) = cv2.boundingRect(approximation)
+        aspect_ratio = w/float(h)
+
+        shape = "square" if aspect_ratio >= 0.95 and aspect_ratio <= 1.05 else "rectangle"
+    elif len(approximation) == 8:
+        shape = "octagon"
+    else:
+        shape = "circle"
+    return shape
