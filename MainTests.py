@@ -42,19 +42,19 @@ cv2.destroyAllWindows()
 #### Test with some images ####
 Images = []
 
-Itraffic1 = cv2.imread("assets/Traffic1.jpg", -1)
-Itraffic2 = cv2.imread("assets/Traffic2.jpg", -1)
-Itraffic3 = cv2.imread("assets/Traffic3.jpg", -1)
-Itraffic4 = cv2.imread("assets/Traffic4.jpg", -1)
-Itraffic5 = cv2.imread("assets/Traffic5.JPG", -1)
-Itraffic6 = cv2.imread("assets/Traffic6.jpg", -1)
-Itraffic7 = cv2.imread("assets/Traffic7.jpg", -1)
-Itraffic8 = cv2.imread("assets/Traffic8.jpg", -1)
-Itraffic9 = cv2.imread("assets/Traffic9.jpg", -1)
-Itraffic10 = cv2.imread("assets/Traffic10.jpg", -1)
-Itraffic11 = cv2.imread("assets/Traffic11.jpg", -1)
-Itraffic12 = cv2.imread("assets/Traffic12.jpg", -1)
-Itraffic13 = cv2.imread("assets/Traffic13.jpg", -1)
+Itraffic1 = cv2.imread("assets/Traffic1.jpg", cv2.IMREAD_UNCHANGED)
+Itraffic2 = cv2.imread("assets/Traffic2.jpg", cv2.IMREAD_UNCHANGED)
+Itraffic3 = cv2.imread("assets/Traffic3.jpg", cv2.IMREAD_UNCHANGED)
+Itraffic4 = cv2.imread("assets/Traffic4.jpg", cv2.IMREAD_UNCHANGED)
+Itraffic5 = cv2.imread("assets/Traffic5.JPG", cv2.IMREAD_UNCHANGED)
+Itraffic6 = cv2.imread("assets/Traffic6.jpg", cv2.IMREAD_UNCHANGED)
+Itraffic7 = cv2.imread("assets/Traffic7.jpg", cv2.IMREAD_UNCHANGED)
+Itraffic8 = cv2.imread("assets/Traffic8.jpg", cv2.IMREAD_UNCHANGED)
+Itraffic9 = cv2.imread("assets/Traffic9.jpg", cv2.IMREAD_UNCHANGED)
+Itraffic10 = cv2.imread("assets/Traffic10.jpg", cv2.IMREAD_UNCHANGED)
+Itraffic11 = cv2.imread("assets/Traffic11.jpg", cv2.IMREAD_UNCHANGED)
+Itraffic12 = cv2.imread("assets/Traffic12.jpg", cv2.IMREAD_UNCHANGED)
+Itraffic13 = cv2.imread("assets/Traffic13.jpg", cv2.IMREAD_UNCHANGED)
 
 
 Images.append(Itraffic1)
@@ -70,17 +70,23 @@ Images.append(Itraffic10)
 Images.append(Itraffic11)
 Images.append(Itraffic12)
 
-window = tkinter.Tk()
-window.title("Speed limitation")
-canvas = tkinter.Canvas(window)
+windowTraffic = tkinter.Tk()
+windowTraffic.title("Traffic image")
+canvasTraffic = tkinter.Canvas(windowTraffic)
+imgTraffic = ImageTk.PhotoImage(file="assets/blank.jpg")
+imgTrafficLabel = tkinter.Label(canvasTraffic, image=imgTraffic)
+
+windowSpeedLimit = tkinter.Tk()
+windowSpeedLimit.title("Speed limitation")
+canvasSpeedLimit = tkinter.Canvas(windowSpeedLimit)
 
 img = ImageTk.PhotoImage(file="assets/blank.jpg")
-sign = tkinter.Label(canvas, image=img)
-text = tkinter.Label(window, text="")
+sign = tkinter.Label(canvasSpeedLimit, image=img)
+text = tkinter.Label(windowSpeedLimit, text="")
 for elt in Images:
     imgs = Processing.pre_processing(elt)
     print("processed")
-
+    img = ImageTk.PhotoImage(file="assets/blank.jpg")
     if imgs is not None:
         for image in imgs:
             number = Recognition.detect_number(image)
@@ -109,10 +115,17 @@ for elt in Images:
                     img = ImageTk.PhotoImage(file="assets/ref90.jpg")
     sign["image"] = img
     sign.pack()
-    canvas.pack()
+    canvasSpeedLimit.pack()
     text["text"] = number
     text.pack()
-    window.update()
+    
+    windowSpeedLimit.update()
+
+    imgTrafficLabel["image"] = elt
+    imgTrafficLabel.pack()
+    canvasTraffic.pack()
+    windowTraffic.update()
+    
     print("END")
     print("\n")
     cv2.waitKey(0)
